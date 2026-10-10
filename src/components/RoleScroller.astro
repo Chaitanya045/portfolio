@@ -3,7 +3,6 @@ const roles = [
   'Software Engineer',
   'Backend Engineer',
   'Applied AI Engineer',
-  'Developer Tools Engineer',
   'Test Automation Engineer',
 ];
 ---
@@ -46,7 +45,7 @@ const roles = [
   }
 
   .role-track {
-    animation: roles-scroll 20s cubic-bezier(.65, 0, .35, 1) infinite;
+    animation: roles-scroll 16s cubic-bezier(.65, 0, .35, 1) infinite;
   }
 
   .role-item {
@@ -56,14 +55,13 @@ const roles = [
     white-space: nowrap;
   }
 
-  /* Five readable holds and a duplicate first row make the loop seamless. */
+  /* Four readable holds and a duplicate first row make the loop seamless. */
   @keyframes roles-scroll {
-    0%, 16% { transform: translateY(0); }
-    20%, 36% { transform: translateY(-16.666667%); }
-    40%, 56% { transform: translateY(-33.333333%); }
-    60%, 76% { transform: translateY(-50%); }
-    80%, 96% { transform: translateY(-66.666667%); }
-    100% { transform: translateY(-83.333333%); }
+    0%, 20% { transform: translateY(0); }
+    25%, 45% { transform: translateY(-20%); }
+    50%, 70% { transform: translateY(-40%); }
+    75%, 95% { transform: translateY(-60%); }
+    100% { transform: translateY(-80%); }
   }
 
   :global(html[data-intro='playing']) .role-track,
