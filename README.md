@@ -29,6 +29,8 @@ pnpm build       # Production output for Vercel
 
 `@/` resolves to `src/`. Add an Astro `client:*` directive only when a React component needs browser interactivity. `WaveButton.tsx` is a removable Motion example with a reduced-motion policy.
 
+The hero name uses self-hosted Syne ExtraBold with wider letter spacing. Only the 800-weight Latin WOFF2 file is loaded (13.7 KB), preloaded on the home page. Its SIL Open Font License is retained in `licenses/syne.txt`.
+
 ## Ambient background
 
 The home page uses a background-only adaptation of [Canvas UI Blaze](https://canvasui.dev/docs/components/blaze). The original license is retained in `licenses/canvas-ui.txt`.
