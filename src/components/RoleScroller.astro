@@ -14,6 +14,7 @@ const roles = [
       {[...roles, roles[0]].map((role) => <span class="role-item">{role}</span>)}
     </div>
   </div>
+  <div class="role-progress" aria-hidden="true"><span class="role-progress-fill"></span></div>
 </div>
 
 <script>
@@ -55,6 +56,7 @@ const roles = [
 
 <style>
   .role-scroller {
+    --role-play-state: running;
     position: absolute;
     top: calc(100% + clamp(1rem, 2vw, 1.75rem));
     left: 50%;
@@ -77,6 +79,7 @@ const roles = [
 
   .role-track {
     animation: roles-scroll 16s cubic-bezier(.65, 0, .35, 1) infinite;
+    animation-play-state: var(--role-play-state);
   }
 
   .role-item {
@@ -86,26 +89,52 @@ const roles = [
     white-space: nowrap;
   }
 
-  /* Four readable holds and a duplicate first row make the loop seamless. */
-  @keyframes roles-scroll {
-    0%, 20% { transform: translateY(0); }
-    25%, 45% { transform: translateY(-20%); }
-    50%, 70% { transform: translateY(-40%); }
-    75%, 95% { transform: translateY(-60%); }
-    100% { transform: translateY(-80%); }
+  .role-progress {
+    width: 4.5rem;
+    height: 1px;
+    margin: .75rem auto 0;
+    overflow: hidden;
+    background: #ea916b24;
   }
 
-  :global(html[data-intro='playing']) .role-track,
-  :global([data-hero][data-motion='paused']) .role-track,
-  .role-scroller[data-hidden] .role-track {
-    animation-play-state: paused;
+  .role-progress-fill {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, #c16b45, #ea916b);
+    transform-origin: left;
+    opacity: .8;
+    animation: role-progress 4s linear infinite;
+    animation-play-state: var(--role-play-state);
+  }
+
+  @keyframes role-progress {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+
+  /* Four readable holds and a duplicate first row make the loop seamless. */
+  @keyframes roles-scroll {
+    0%, 20% { transform: translateY(0); opacity: 1; filter: blur(0); }
+    25%, 45% { transform: translateY(-20%); opacity: 1; filter: blur(0); }
+    50%, 70% { transform: translateY(-40%); opacity: 1; filter: blur(0); }
+    75%, 95% { transform: translateY(-60%); opacity: 1; filter: blur(0); }
+    100% { transform: translateY(-80%); opacity: 1; filter: blur(0); }
+    22.5%, 47.5%, 72.5%, 97.5% { opacity: .35; filter: blur(2px); }
+  }
+
+  :global(html[data-intro='playing']) .role-scroller,
+  :global([data-hero][data-motion='paused']) .role-scroller,
+  .role-scroller[data-hidden],
+  .role-scroller[data-reading] {
+    --role-play-state: paused;
   }
 
   .role-scroller[data-reading] { color: #f0c5ad; }
-  .role-scroller[data-reading] .role-track { animation-play-state: paused; }
 
   @media (prefers-reduced-motion: reduce) {
     .role-track { animation: none; }
     .role-scroller { transition: none; }
+    .role-progress { display: none; }
+    .role-progress-fill { animation: none; }
   }
 </style>
