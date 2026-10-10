@@ -106,7 +106,7 @@
   line-height: 1.5;
   vertical-align: .1em;
 }
-.display { font-family: var(--font-display); font-weight: 700; letter-spacing: -.035em; }
+.display { font-family: var(--font-display); font-weight: 700; letter-spacing: -.02em; }
 .section-head {
   display: flex;
   align-items: baseline;
