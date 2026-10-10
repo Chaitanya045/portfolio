@@ -4,9 +4,10 @@ import '@/styles/global.css';
 interface Props {
   title: string;
   description?: string;
+  launchIntro?: boolean;
 }
 
-const { title, description = 'Projects, case studies, and writing by Chaitanya.' } = Astro.props;
+const { title, description = 'Projects, case studies, and writing by Chaitanya.', launchIntro = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -18,6 +19,45 @@ const { title, description = 'Projects, case studies, and writing by Chaitanya.'
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
+    {launchIntro && (
+      <script is:inline>
+        (() => {
+          // Decide before the first paint so the hero never flashes behind the intro.
+          const root = document.documentElement;
+          const key = 'portfolio:ignition-seen:v1';
+          const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+          try {
+            if (motion.matches || sessionStorage.getItem(key)) return;
+            sessionStorage.setItem(key, '1');
+          } catch {
+            // Unavailable storage should leave the page immediately usable.
+            return;
+          }
+
+          root.style.setProperty('--intro-line-scale', String(88 / window.innerWidth));
+          root.dataset.intro = 'playing';
+          let timeout;
+          function finish() {
+            delete root.dataset.intro;
+            root.style.removeProperty('--intro-line-scale');
+            clearTimeout(timeout);
+            document.removeEventListener('animationend', onAnimationEnd);
+            window.removeEventListener('keydown', finish);
+            window.removeEventListener('pointerdown', finish);
+            motion.removeEventListener('change', finish);
+          }
+          function onAnimationEnd(event) {
+            if (event.target instanceof Element && event.target.hasAttribute('data-intro-line')) finish();
+          }
+          document.addEventListener('animationend', onAnimationEnd);
+          window.addEventListener('keydown', finish, { once: true });
+          window.addEventListener('pointerdown', finish, { once: true });
+          motion.addEventListener('change', finish, { once: true });
+          // Also reveal the page if CSS animation events fail to arrive.
+          timeout = setTimeout(finish, 1800);
+        })();
+      </script>
+    )}
   </head>
   <body class="font-sans antialiased">
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:bg-paper focus:p-3">Skip to content</a>

@@ -2,12 +2,14 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import WaveButton from '@/components/WaveButton';
 import BlazeBackground from '@/components/BlazeBackground.astro';
+import HeroIntro from '@/components/HeroIntro.astro';
 ---
 
-<BaseLayout title="Chaitanya — Portfolio">
+<BaseLayout title="Chaitanya — Portfolio" launchIntro>
   <div class="hero" data-hero data-motion="running">
     <BlazeBackground />
-    <div class="mx-auto flex min-h-svh max-w-6xl flex-col px-6 sm:px-10">
+    <HeroIntro />
+    <div data-intro-content class="mx-auto flex min-h-svh max-w-6xl flex-col px-6 sm:px-10">
       <header class="flex items-center justify-between border-b border-ink/10 py-7">
         <a href="/" class="text-sm font-semibold tracking-tight">Chaitanya<span class="text-accent">.</span></a>
         <span class="text-xs tracking-wide text-ink/55">Portfolio in progress</span>

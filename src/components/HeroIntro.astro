@@ -1,0 +1,80 @@
+<div class="hero-intro" aria-hidden="true">
+  <div class="intro-shutter intro-shutter-top"></div>
+  <div class="intro-shutter intro-shutter-bottom"></div>
+  <div class="intro-line" data-intro-line></div>
+</div>
+
+<style>
+  .hero-intro {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  :global(html[data-intro='playing']) .hero-intro { display: block; }
+
+  .intro-shutter {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: calc(50% + 1px);
+    background: #090706;
+    will-change: transform;
+    animation-duration: 1200ms;
+    animation-timing-function: cubic-bezier(.76, 0, .24, 1);
+    animation-fill-mode: both;
+  }
+
+  .intro-shutter-top { top: 0; animation-name: ignition-open-top; }
+  .intro-shutter-bottom { bottom: 0; animation-name: ignition-open-bottom; }
+
+  .intro-line {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 2px;
+    border-radius: 2px;
+    background: #ef6a43;
+    box-shadow: 0 0 12px #df442a80, 0 0 34px #a42a1b38;
+    transform-origin: center;
+    will-change: transform, opacity;
+    animation: ignition-line 1200ms cubic-bezier(.65, 0, .25, 1) both;
+  }
+
+  :global(html[data-intro='playing'] [data-intro-content]) {
+    animation: ignition-content 1200ms ease-out both;
+  }
+
+  @keyframes ignition-line {
+    0% { opacity: 0; transform: translateY(-50%) rotate(-90deg) scaleX(var(--intro-line-scale, .06)); }
+    15%, 26% { opacity: 1; transform: translateY(-50%) rotate(-90deg) scaleX(var(--intro-line-scale, .06)); }
+    46% { opacity: 1; transform: translateY(-50%) rotate(0deg) scaleX(var(--intro-line-scale, .06)); }
+    68%, 76% { opacity: 1; transform: translateY(-50%) rotate(0deg) scaleX(1); }
+    100% { opacity: 0; transform: translateY(-50%) rotate(0deg) scaleX(1); }
+  }
+
+  @keyframes ignition-open-top {
+    0%, 68% { transform: translateY(0); }
+    100% { transform: translateY(-101%); }
+  }
+
+  @keyframes ignition-open-bottom {
+    0%, 68% { transform: translateY(0); }
+    100% { transform: translateY(101%); }
+  }
+
+  @keyframes ignition-content {
+    0%, 68% { opacity: 0; visibility: hidden; transform: translateY(8px); }
+    69% { opacity: 0; visibility: visible; transform: translateY(8px); }
+    100% { opacity: 1; visibility: visible; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(html[data-intro='playing']) .hero-intro { display: none; }
+    :global(html[data-intro='playing'] [data-intro-content]) { animation: none; }
+  }
+</style>
