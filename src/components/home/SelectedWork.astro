@@ -1,0 +1,47 @@
+---
+import { getCollection } from 'astro:content';
+import WorkCard from '@/components/work/WorkCard.astro';
+
+const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
+// Editorial grid: a lead project, a second set lower beside it, then one centred below.
+const layout = ['lead', 'side', 'base'];
+---
+
+<section id="work" class="work wrap" aria-labelledby="work-title">
+  <div class="section-head">
+    <h2 id="work-title" class="serif section-title" data-reveal="title"><span>Selected work</span></h2>
+    <span class="kicker">({String(work.length).padStart(2, '0')})</span>
+  </div>
+  <div class="work-grid">
+    {work.map((entry, index) => (
+      <WorkCard
+        entry={entry}
+        index={index}
+        class={`work-${layout[index] ?? 'base'}`}
+        sizes={index === 0 ? '(min-width: 64rem) 680px, 100vw' : '(min-width: 64rem) 560px, 100vw'}
+      />
+    ))}
+  </div>
+</section>
+
+<style>
+  .work { padding-bottom: clamp(4rem, 9vw, 7rem); }
+
+  .work-grid {
+    display: grid;
+    gap: 4rem;
+    margin-top: 3rem;
+  }
+
+  @media (min-width: 64rem) {
+    .work-grid {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: 2rem;
+      row-gap: 5rem;
+    }
+
+    .work-grid :global(.work-lead) { grid-column: 1 / 8; }
+    .work-grid :global(.work-side) { grid-column: 8 / 13; margin-top: 9rem; }
+    .work-grid :global(.work-base) { grid-column: 3 / 10; }
+  }
+</style>

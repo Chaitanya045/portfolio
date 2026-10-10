@@ -1,0 +1,66 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  entry: CollectionEntry<'work'>;
+  sizes: string;
+  eager?: boolean;
+}
+
+const { entry, sizes, eager = false } = Astro.props;
+const { cover, coverAlt, title } = entry.data;
+---
+
+<figure class="cover" style={`view-transition-name: cover-${entry.id}`}>
+  {cover ? (
+    <Image src={cover} alt={coverAlt ?? `${title} screenshot`} sizes={sizes} widths={[480, 800, 1200, 1440]} loading={eager ? 'eager' : 'lazy'} />
+  ) : (
+    <div class="type-cover" role="img" aria-label={`${title}: a terminal session planning and executing a coding task`}>
+      <p><span class="tc-prompt">$</span> zace "add retries to the webhook handler"</p>
+      <p class="tc-gap"><span class="tc-label">plan</span> 1 read the handler</p>
+      <p><span class="tc-label"></span> 2 add backoff with jitter</p>
+      <p><span class="tc-label"></span> 3 run the tests</p>
+      <p class="tc-gap"><span class="tc-label">exec</span> <span class="tc-ok">✓</span> read_file <span class="tc-dim">schema ok</span></p>
+      <p><span class="tc-label"></span> <span class="tc-ok">✓</span> apply_patch <span class="tc-dim">permission granted</span></p>
+      <p><span class="tc-label"></span> <span class="tc-ok">✓</span> run_tests <span class="tc-dim">passed</span></p>
+    </div>
+  )}
+</figure>
+
+<style>
+  .cover {
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    aspect-ratio: 16 / 10;
+  }
+
+  .cover :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  .type-cover {
+    display: grid;
+    align-content: center;
+    gap: .35rem;
+    height: 100%;
+    padding: clamp(1.25rem, 4vw, 3rem);
+    color: #e9e2d6;
+    background: radial-gradient(ellipse at 80% 0%, #3a160d, transparent 60%), #0d0706;
+    font-family: var(--font-mono);
+    font-size: clamp(.65rem, 1.2vw, .9rem);
+    white-space: nowrap;
+  }
+
+  .tc-gap { margin-top: .8rem; }
+  .tc-prompt { color: #f0a585; }
+  .tc-label { display: inline-block; width: 3.5em; color: #8f847a; }
+  .tc-ok { color: #9fd3a6; }
+  .tc-dim { color: #8f847a; }
+</style>

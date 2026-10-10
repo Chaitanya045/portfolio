@@ -3,18 +3,26 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import BlazeBackground from '@/components/BlazeBackground.astro';
 import HeroIntro from '@/components/HeroIntro.astro';
 import RoleScroller from '@/components/RoleScroller.astro';
+import SiteHeader from '@/components/SiteHeader.astro';
+import SiteFooter from '@/components/SiteFooter.astro';
+import Intro from '@/components/home/Intro.astro';
+import SelectedWork from '@/components/home/SelectedWork.astro';
+import Experience from '@/components/home/Experience.astro';
+import Contact from '@/components/home/Contact.astro';
 import { spring } from 'motion';
 
 // Bake the spring into CSS so Motion adds no browser runtime for this effect.
 const nameSpring = String(spring(.45));
 ---
 
-<BaseLayout title="Chaitanya — Portfolio" launchIntro>
+<BaseLayout title="Chaitanya Sanapala — Software Engineer" description="Software engineer in Bangalore working across backend development, SaaS quality engineering and AI systems." launchIntro>
   <link slot="head" rel="preload" href="/fonts/outfit-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin />
-  <div class="hero" data-hero data-motion="running">
+  <SiteHeader overHero />
+  <main id="main">
+  <div id="top" class="hero" data-hero data-motion="running">
     <BlazeBackground />
     <HeroIntro />
-    <main id="main" data-intro-content class="flex min-h-svh items-center justify-center px-6 text-center">
+    <div data-intro-content class="flex min-h-svh items-center justify-center px-6 text-center">
       <div class="hero-title">
         <h1 class="hero-name" data-interactive-name style={`--name-spring: ${nameSpring}`}>
           <span class="hero-name-ink" data-name-ink>CHAITANYA<span class="hero-name-highlight" aria-hidden="true">CHAITANYA</span></span>
@@ -26,8 +34,16 @@ const nameSpring = String(spring(.45));
         <svg class="play-icon" width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="m3 1.5 7 4.5-7 4.5z" /></svg>
         <span>Motion</span>
       </button>
-    </main>
+    </div>
   </div>
+  <div class="sheet sheet-cover">
+    <Intro />
+    <SelectedWork />
+    <Experience />
+    <Contact />
+  </div>
+  </main>
+  <SiteFooter />
 </BaseLayout>
 
 <script>
@@ -110,6 +126,13 @@ const nameSpring = String(spring(.45));
   }
 
   .hero-title { position: relative; }
+
+  /* The page body fades up out of the hero's glow rather than starting on a hard edge. */
+  .sheet-cover {
+    margin-top: -10rem;
+    padding-top: 10rem;
+    background: linear-gradient(to bottom, transparent, var(--bg) 10rem);
+  }
 
   .hero-name {
     color: #ea916b;

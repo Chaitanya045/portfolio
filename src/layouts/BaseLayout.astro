@@ -1,4 +1,8 @@
 ---
+import '@fontsource-variable/inter';
+import '@fontsource/instrument-serif/400.css';
+import '@fontsource/instrument-serif/400-italic.css';
+import '@fontsource/jetbrains-mono/400.css';
 import '@/styles/global.css';
 
 interface Props {
@@ -56,5 +60,8 @@ const { title, description = 'Projects, case studies, and writing by Chaitanya.'
   <body class="font-sans antialiased">
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:bg-paper focus:p-3">Skip to content</a>
     <slot />
+    <script>
+      import '@/scripts/interactions';
+    </script>
   </body>
 </html>

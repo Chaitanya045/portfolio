@@ -1,0 +1,136 @@
+---
+import { profile } from '@/data/resume';
+---
+
+<section id="contact" class="contact wrap" aria-labelledby="contact-title">
+  <div class="section-head">
+    <h2 id="contact-title" class="serif section-title" data-reveal="title"><span>Get in touch</span></h2>
+    <span class="kicker">{profile.location}</span>
+  </div>
+  <div class="contact-body" data-reveal>
+    <p class="contact-lead">The quickest way to reach me is email.</p>
+    <div class="contact-row">
+      <a class="serif contact-email" href={`mailto:${profile.email}`}>
+        <span class="contact-email-text">{profile.email}</span>
+        <span class="contact-email-arrow" aria-hidden="true">↗</span>
+      </a>
+      <button type="button" class="copy-button" data-copy={profile.email} aria-label="Copy email address">
+        <svg class="copy-icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" /><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" /></svg>
+        <svg class="check-icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="m3 8.5 3 3 7-7" /></svg>
+        <span data-copy-label>Copy</span>
+      </button>
+      <span class="sr-only" aria-live="polite" data-copy-status></span>
+    </div>
+    <ul class="contact-links">
+      <li><a href={profile.github} target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a></li>
+      <li><a href={profile.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a></li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .contact { padding-bottom: clamp(4rem, 9vw, 7rem); }
+
+  .contact-body { margin-top: 2.5rem; }
+
+  .contact-lead { color: var(--muted); }
+
+  .contact-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+    margin-top: .75rem;
+  }
+
+  .contact-email {
+    display: inline-flex;
+    align-items: baseline;
+    gap: .4em;
+    font-size: clamp(2rem, 5.5vw, 4rem);
+    line-height: 1.1;
+    overflow-wrap: anywhere;
+  }
+
+  /* The underline draws in from the left on hover. */
+  .contact-email-text {
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+    transition: background-size .6s var(--ease-out), color .3s ease;
+  }
+
+  .contact-email:hover .contact-email-text {
+    color: var(--accent);
+    background-size: 100% 1px;
+  }
+
+  .contact-email-arrow {
+    font-size: .6em;
+    color: var(--muted);
+    transition: transform .4s var(--ease-out), color .3s ease;
+  }
+
+  .contact-email:hover .contact-email-arrow {
+    color: var(--accent);
+    transform: translate(4px, -4px);
+  }
+
+  .copy-button {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .55rem .95rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    background: none;
+    font: inherit;
+    font-size: .85rem;
+    cursor: pointer;
+    transition: color .2s ease, border-color .2s ease, background-color .2s ease, transform .15s ease;
+  }
+
+  .copy-button:hover { color: var(--text); border-color: var(--muted); }
+  .copy-button:active { transform: scale(.96); }
+  .copy-button[data-copied] { color: #170a08; border-color: var(--accent); background: var(--accent); }
+
+  .copy-button svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .check-icon { display: none; }
+  .copy-button[data-copied] .copy-icon { display: none; }
+  .copy-button[data-copied] .check-icon { display: block; stroke-dasharray: 16; animation: check-draw .35s var(--ease-out) both; }
+
+  @keyframes check-draw { from { stroke-dashoffset: 16; } }
+
+  .contact-links {
+    display: flex;
+    gap: 2rem;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .contact-links a {
+    color: var(--muted);
+    transition: color .2s ease;
+  }
+
+  .contact-links a span[aria-hidden] {
+    display: inline-block;
+    transition: transform .35s var(--ease-out);
+  }
+
+  .contact-links a:hover { color: var(--text); }
+  .contact-links a:hover span[aria-hidden] { transform: translate(2px, -2px); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contact-email-text, .contact-email-arrow, .copy-button, .contact-links a span[aria-hidden] { transition: none; }
+    .contact-email:hover .contact-email-arrow, .contact-links a:hover span[aria-hidden] { transform: none; }
+    .copy-button[data-copied] .check-icon { animation: none; }
+  }
+</style>

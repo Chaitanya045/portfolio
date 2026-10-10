@@ -1,0 +1,29 @@
+---
+title: Zace
+kind: CLI coding agent
+summary: A model-agnostic CLI coding agent that turns developer intent into deterministic execution with a planner–executor runtime.
+period: Feb 2026 – Mar 2026
+order: 2
+role: Builder
+stack: [Bun, TypeScript, Python, Zod, JSON-RPC, LSP, uv]
+url: https://github.com/Chaitanya045/Zace
+linkLabel: GitHub
+---
+
+import Flow from '../../components/work/Flow.astro';
+
+## Overview
+
+Zace is a command-line coding agent built with Bun and TypeScript. It works with any model, and splits each task into planning and execution so that runs are deterministic.
+
+## The runtime
+
+<Flow steps={['Developer intent', 'Planner', 'Executor', 'Validated tools']} />
+
+A context and memory pipeline keeps multi-step execution state. It threads session history and tool outputs through agent loops, and caches structured summaries to improve code understanding.
+
+## Safety
+
+- **Zod-validated tool schemas**, so malformed tool calls are rejected before they run.
+- **Permission-aware safeguards** around actions that change the workspace.
+- **Controlled side-effect boundaries**, keeping autonomous execution auditable.

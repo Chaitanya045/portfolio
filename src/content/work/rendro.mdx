@@ -1,0 +1,32 @@
+---
+title: Rendro
+kind: Documentation hosting platform
+summary: Push HTML docs from a CLI and read them live, with a lazy VS Code-style sidebar, inline comments and org isolation.
+period: Jul 2026 – Present
+order: 1
+role: Builder
+stack: [Hono, Convex, Cloudflare Workers, Cloudflare R2]
+url: https://rendro.app/
+linkLabel: rendro.app
+cover: ../../assets/work/rendro.png
+coverAlt: The Rendro landing page, showing a documentation workspace with a sidebar tree.
+---
+
+import Flow from '../../components/work/Flow.astro';
+
+## Overview
+
+Rendro hosts documentation for teams that keep their docs as plain HTML in the repository. Docs are pushed from a CLI, or from CI, and read in a live workspace with a VS Code-style sidebar tree and inline comments.
+
+## How it works
+
+<Flow steps={['rendro CLI', 'Cloudflare Worker', 'R2 storage', 'Live reader']} />
+
+Publishing runs through Cloudflare Workers and R2. Comments and authentication are backed by Convex.
+
+## Decisions
+
+- **Hash-based diffing**, so unchanged pages can be skipped on upload.
+- **API-key org isolation**, keeping each organisation’s docs separate.
+- **Lazy tree loading**, so large doc sets open quickly in the sidebar.
+- **Soft deletes and dark mode** in the reader.

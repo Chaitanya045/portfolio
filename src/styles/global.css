@@ -1,10 +1,31 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", "Segoe UI", sans-serif;
+  --font-sans: "Inter Variable", "Segoe UI", sans-serif;
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
   --color-paper: #170a08;
   --color-ink: #f2e6dd;
   --color-accent: #e7835e;
+}
+
+/* Everything below the hero continues its ember-on-charcoal palette. */
+:root {
+  --bg: #120a08;
+  --surface: #1b0f0c;
+  --text: #f2e6dd;
+  --muted: #b09d91;
+  --line: #3a2620;
+  --accent: #ef8a5f;
+  --accent-strong: #ef6a43;
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+}
+
+/* Cross-document view transitions morph project cards into case studies. */
+@view-transition { navigation: auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
 }
 
 @layer base {
@@ -46,3 +67,49 @@
   .blaze-canvas { display: none; }
   .blaze-canvas, .motion-toggle { transition: none; }
 }
+
+/* Shared layout for the pages below the hero. */
+.sheet { position: relative; z-index: 1; background: var(--bg); color: var(--text); }
+.wrap { max-width: 76rem; margin: 0 auto; padding: 0 1.5rem; }
+.kicker { color: var(--muted); font-family: var(--font-mono); font-size: .75rem; letter-spacing: .04em; }
+.serif { font-family: var(--font-serif); font-weight: 400; }
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+.section-title { font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 1; }
+
+/* Reveals: content is visible unless the script opts the page in. */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-reveal-ready] [data-reveal] { transition: opacity .9s var(--ease-out), transform .9s var(--ease-out); }
+  html[data-reveal-ready] [data-reveal]:not([data-revealed]) { opacity: 0; transform: translateY(28px); }
+
+  /* Titles rise out of a clipped line instead of fading. */
+  html[data-reveal-ready] [data-reveal='title'] { opacity: 1; transform: none; overflow: clip; padding-bottom: .08em; }
+  html[data-reveal-ready] [data-reveal='title'] > span { display: inline-block; transition: transform 1s var(--ease-out); }
+  html[data-reveal-ready] [data-reveal='title']:not([data-revealed]) { opacity: 1; transform: none; }
+  html[data-reveal-ready] [data-reveal='title']:not([data-revealed]) > span { transform: translateY(105%); }
+}
+
+.cursor-pill {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  padding: .55rem .9rem;
+  border-radius: 999px;
+  color: #170a08;
+  background: var(--accent);
+  font-size: .8rem;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  translate: 14px 14px;
+  scale: .4;
+  opacity: 0;
+  transition: opacity .2s ease, scale .35s var(--ease-out);
+}
+.cursor-pill[data-visible] { opacity: 1; scale: 1; }

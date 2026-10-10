@@ -20,7 +20,11 @@ pnpm build       # Production output for Vercel
 
 ## Structure
 
-- `src/pages/`: file-based routes; the home page shows Chaitanya centered over the ambient background.
+- `src/pages/`: file-based routes. The home page is the hero followed by the intro, selected work, experience and contact; `work/[slug].astro` renders each case study.
+- `src/data/resume.ts`: profile and experience content, taken from the résumé.
+- `src/content/work/`: one MDX case study per project; screenshots live in `src/assets/work/`.
+- `src/components/SiteHeader.astro`: centred C/S logo (`Logo.astro`), section links, Bangalore clock and social links.
+- `src/scripts/interactions.ts`: shared micro-interactions (scroll reveals, card cursor label, copy-to-clipboard, logo draw after the intro).
 - `src/layouts/BaseLayout.astro`: shared document metadata and global styles.
 - `src/components/`: interactive React components and reusable Astro components.
 - `src/styles/global.css`: Tailwind import, theme tokens, and base styles.
@@ -28,6 +32,8 @@ pnpm build       # Production output for Vercel
 - `src/content.config.ts`: Zod-validated blog metadata.
 
 `@/` resolves to `src/`. Add an Astro `client:*` directive only when a React component needs browser interactivity. `WaveButton.tsx` is a removable Motion example with a reduced-motion policy.
+
+Below the hero, pages use self-hosted Instrument Serif for headings, Inter for text and JetBrains Mono for small labels, all under the SIL Open Font License (see `licenses/`). Project cards morph into their case studies with cross-document view transitions where supported.
 
 The hero name uses self-hosted Outfit Bold, a geometric sans with subtle letter spacing. Only the 700-weight Latin WOFF2 file is loaded, preloaded on the home page. Its SIL Open Font License is retained in `licenses/outfit.txt`.
 

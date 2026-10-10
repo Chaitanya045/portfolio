@@ -1,0 +1,65 @@
+---
+import { experience, profile } from '@/data/resume';
+
+const [current, previous] = experience;
+const facts = [
+  { label: 'Now', value: `${current.role}, ${current.company}` },
+  { label: 'Before', value: `${previous.role}, ${previous.company}` },
+  { label: 'Based in', value: profile.location },
+];
+---
+
+<section class="intro wrap" aria-labelledby="intro-title">
+  <div class="intro-grid">
+    <dl class="intro-facts" data-reveal>
+      {facts.map((fact) => (
+        <div>
+          <dt class="kicker">{fact.label}</dt>
+          <dd>{fact.value}</dd>
+        </div>
+      ))}
+    </dl>
+    <div>
+      <h2 id="intro-title" class="serif intro-statement" data-reveal>{profile.statement}</h2>
+      <p class="intro-summary" data-reveal>{profile.summary}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .intro { padding-top: clamp(4rem, 9vw, 7rem); padding-bottom: clamp(4rem, 9vw, 7rem); }
+
+  .intro-grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  @media (min-width: 56rem) {
+    .intro-grid { grid-template-columns: 16rem 1fr; gap: 4rem; }
+  }
+
+  .intro-facts {
+    display: grid;
+    gap: 1.1rem;
+    align-content: start;
+    padding-top: .6rem;
+  }
+
+  .intro-facts dd { margin-top: .2rem; font-size: .95rem; }
+
+  .intro-statement {
+    max-width: 46rem;
+    font-size: clamp(2.25rem, 5vw, 4rem);
+    line-height: 1.05;
+    letter-spacing: -.01em;
+    text-wrap: balance;
+  }
+
+  .intro-summary {
+    max-width: 38rem;
+    margin-top: 1.75rem;
+    color: var(--muted);
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+</style>

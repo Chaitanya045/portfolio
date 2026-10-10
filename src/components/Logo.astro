@@ -1,0 +1,69 @@
+---
+// C/S monogram: blocky italic C and S split by a slash, inside a ring.
+interface Props {
+  size?: number | string;
+  class?: string;
+  title?: string;
+}
+
+const { size = 40, class: className, title } = Astro.props;
+---
+
+<svg
+  class:list={['logo', className]}
+  width={size}
+  height={size}
+  viewBox="0 0 100 100"
+  fill="none"
+  role={title ? 'img' : undefined}
+  aria-label={title}
+  aria-hidden={title ? undefined : 'true'}
+>
+  <circle class="logo-ring" cx="50" cy="50" r="45" stroke="currentColor" stroke-width="4" pathLength="100" />
+  <g fill="currentColor" transform="translate(50 50) skewX(-20) translate(-50 -50)">
+    <path class="logo-c" d="M19 25H43V31.5H25.5V42.5H43V49H19Z" />
+    <path class="logo-slash" d="M45 21H54V79H45Z" />
+    <path class="logo-s" d="M57 51H81V57.5H63.5V59.5H81V75H57V68.5H74.5V66.5H57Z" />
+  </g>
+</svg>
+
+<style>
+  .logo { overflow: visible; }
+
+  .logo-ring {
+    transform-origin: 50% 50%;
+    transform: rotate(-90deg);
+  }
+
+  .logo-c, .logo-s, .logo-slash {
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: transform .45s var(--ease-out);
+  }
+
+  /* Hovering the logo's link pulls the letters apart along the slash. */
+  :global(a:hover) > .logo .logo-c,
+  :global(a:focus-visible) > .logo .logo-c { transform: translate(-5px, -4px); }
+  :global(a:hover) > .logo .logo-s,
+  :global(a:focus-visible) > .logo .logo-s { transform: translate(5px, 4px); }
+  :global(a:hover) > .logo .logo-slash,
+  :global(a:focus-visible) > .logo .logo-slash { transform: scaleY(1.12); }
+
+  /* After the hero intro, the ring draws itself once. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html[data-intro]) .logo-ring { stroke-dasharray: 100; stroke-dashoffset: 100; }
+    :global(html[data-intro-done]) .logo-ring {
+      stroke-dasharray: 100;
+      animation: logo-draw 1.4s var(--ease-out) both;
+    }
+  }
+
+  @keyframes logo-draw {
+    from { stroke-dashoffset: 100; }
+    to { stroke-dashoffset: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .logo-c, .logo-s, .logo-slash { transition: none; }
+  }
+</style>

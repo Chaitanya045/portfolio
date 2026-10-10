@@ -1,0 +1,164 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SiteHeader from '@/components/SiteHeader.astro';
+import SiteFooter from '@/components/SiteFooter.astro';
+import WorkCover from '@/components/work/WorkCover.astro';
+
+export async function getStaticPaths() {
+  const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
+  return work.map((entry, index) => ({
+    params: { slug: entry.id },
+    props: { entry, next: work[(index + 1) % work.length] },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'work'>;
+  next: CollectionEntry<'work'>;
+}
+
+const { entry, next } = Astro.props;
+const { title, kind, summary, period, role, stack, url, linkLabel } = entry.data;
+const { Content } = await render(entry);
+---
+
+<BaseLayout title={`${title} — Chaitanya Sanapala`} description={summary}>
+  <SiteHeader />
+  <main id="main" class="sheet case">
+    <div class="wrap">
+      <a href="/#work" class="kicker case-back">← All work</a>
+
+      <header class="case-head">
+        <p class="kicker case-kind">{kind}</p>
+        <h1 class="serif case-title" style={`view-transition-name: title-${entry.id}`}>{title}</h1>
+        <p class="case-summary">{summary}</p>
+      </header>
+
+      <WorkCover entry={entry} sizes="(min-width: 76rem) 1184px, 100vw" eager />
+
+      <div class="case-body" data-reveal>
+        <dl class="case-facts">
+          <div><dt class="kicker">Role</dt><dd>{role}</dd></div>
+          <div><dt class="kicker">Period</dt><dd>{period}</dd></div>
+          <div><dt class="kicker">Stack</dt><dd>{stack.join(', ')}</dd></div>
+          <div><dt class="kicker">Live</dt><dd><a href={url} target="_blank" rel="noopener noreferrer">{linkLabel} ↗<span class="sr-only"> (opens in a new tab)</span></a></dd></div>
+        </dl>
+        <article class="prose">
+          <Content />
+        </article>
+      </div>
+
+      <a href={`/work/${next.id}/`} class="case-next" data-cursor={`Next: ${next.data.title} →`}>
+        <span class="kicker">Next project</span>
+        <span class="serif case-next-title">{next.data.title} →</span>
+      </a>
+    </div>
+  </main>
+  <SiteFooter />
+</BaseLayout>
+
+<style>
+  .case { padding-top: 7rem; }
+
+  .case-back {
+    display: inline-block;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 5px;
+  }
+
+  .case-back:hover { text-decoration-color: currentColor; }
+
+  .case-head {
+    margin: 2.5rem 0 3rem;
+  }
+
+  .case-kind { color: var(--accent); }
+
+  .case-title {
+    width: fit-content;
+    margin-top: .5rem;
+    font-size: clamp(4rem, 12vw, 9rem);
+    line-height: .9;
+    letter-spacing: -.02em;
+  }
+
+  .case-summary {
+    max-width: 40rem;
+    margin-top: 1.5rem;
+    color: var(--muted);
+    font-size: 1.15rem;
+    line-height: 1.6;
+  }
+
+  .case-body {
+    display: grid;
+    gap: 3rem;
+    margin-top: 3.5rem;
+  }
+
+  @media (min-width: 56rem) {
+    .case-body { grid-template-columns: 16rem minmax(0, 42rem); gap: 5rem; }
+    .case-facts { position: sticky; top: 6rem; align-self: start; }
+  }
+
+  .case-facts {
+    display: grid;
+    gap: 1.1rem;
+  }
+
+  .case-facts dd { margin-top: .2rem; line-height: 1.5; }
+
+  .case-facts a {
+    text-decoration: underline;
+    text-decoration-color: var(--line);
+    text-underline-offset: 4px;
+  }
+
+  .case-facts a:hover { text-decoration-color: currentColor; }
+
+  .prose {
+    font-size: 1.075rem;
+    line-height: 1.75;
+  }
+
+  .prose :global(h2) {
+    margin: 2.75rem 0 .75rem;
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    font-weight: 400;
+    line-height: 1.1;
+  }
+
+  .prose :global(h2:first-child) { margin-top: 0; }
+  .prose :global(p + p) { margin-top: 1rem; }
+
+  .prose :global(ul) {
+    display: grid;
+    gap: .6rem;
+    margin: 1rem 0;
+    padding-left: 1.1rem;
+    list-style: square;
+  }
+
+  .prose :global(li::marker) { color: var(--accent); }
+  .prose :global(strong) { font-weight: 600; }
+
+  .case-next {
+    display: grid;
+    gap: .4rem;
+    margin: 6rem 0 4rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .case-next-title {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 1;
+    transition: color .2s ease;
+  }
+
+  .case-next:hover .case-next-title { color: var(--accent); }
+</style>

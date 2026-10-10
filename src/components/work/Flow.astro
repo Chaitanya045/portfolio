@@ -1,0 +1,45 @@
+---
+// A static left-to-right pipeline diagram for case studies.
+interface Props {
+  steps: string[];
+}
+
+const { steps } = Astro.props;
+---
+
+<ol class="flow" aria-label="Pipeline">
+  {steps.map((step, index) => (
+    <li class="flow-step"><span class="flow-index">{String(index + 1).padStart(2, '0')}</span>{step}</li>
+  ))}
+</ol>
+
+<style>
+  .flow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin: 2rem 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: .8rem;
+  }
+
+  .flow-step {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    padding: .7rem .9rem;
+    border: 1px solid var(--line);
+    background: var(--surface);
+  }
+
+  .flow-step:not(:last-child)::after {
+    content: '→';
+    margin-left: .5rem;
+    color: var(--accent);
+  }
+
+  .flow-index { color: var(--muted); }
+</style>

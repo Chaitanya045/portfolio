@@ -1,0 +1,31 @@
+---
+title: Zevium
+kind: API marketplace
+summary: Backend systems for an API marketplace, from a payment migration to a credit-based usage system built for heavy writes.
+period: Nov 2025 – Apr 2026
+order: 3
+role: Backend engineer
+stack: [TanStack Start, TypeScript, Cloudflare Workers, Redis, SQLite]
+url: https://www.zevium.dev/
+linkLabel: zevium.dev
+cover: ../../assets/work/zevium.png
+coverAlt: The Zevium landing page, explaining pay-per-call APIs.
+---
+
+import Flow from '../../components/work/Flow.astro';
+
+## Overview
+
+Zevium is an API marketplace where developers and agents pay per call. I built its backend systems.
+
+## Payments and credits
+
+I migrated the payment flow from Autumn to Polar and integrated secure billing. On top of it, I designed a credit-based usage system: users buy credits and spend them as they call marketplace APIs.
+
+## The write problem
+
+Usage produces far more writes than reads, because every call is a transaction to record.
+
+<Flow steps={['API call', 'Redis (real time)', 'Worker cron', 'SQLite (batched)']} />
+
+Transactions are recorded in Redis as they happen. A Cloudflare Worker cron job then persists them to SQLite in batches, which keeps the serverless setup cost-efficient as usage grows.
