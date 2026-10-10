@@ -209,6 +209,20 @@ const all = [...left, ...right];
     pointer-events: none;
   }
 
+  .site-header::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: -1;
+    height: 8rem;
+    background: linear-gradient(to bottom, var(--bg) 5rem, transparent);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .4s ease;
+  }
+
+  .site-header[data-solid]::before { opacity: 1; }
+
   .capsule {
     position: relative;
     display: grid;
@@ -439,6 +453,6 @@ const all = [...left, ...right];
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .capsule, .capsule-glow, .capsule-light, .nav-dot, .menu-icon span { transition: none; }
+    .site-header::before, .capsule, .capsule-glow, .capsule-light, .nav-dot, .menu-icon span { transition: none; }
   }
 </style>
