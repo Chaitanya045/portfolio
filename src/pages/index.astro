@@ -5,12 +5,12 @@ import HeroIntro from '@/components/HeroIntro.astro';
 ---
 
 <BaseLayout title="Chaitanya — Portfolio" launchIntro>
-  <link slot="head" rel="preload" href="/fonts/manrope-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link slot="head" rel="preload" href="/fonts/outfit-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin />
   <div class="hero" data-hero data-motion="running">
     <BlazeBackground />
     <HeroIntro />
     <main id="main" data-intro-content class="flex min-h-svh items-center justify-center px-6 text-center">
-      <h1 class="hero-name">Chaitanya</h1>
+      <h1 class="hero-name">CHAITANYA</h1>
       <button class="motion-toggle sr-only focus:not-sr-only focus:fixed focus:right-6 focus:bottom-6" data-motion-toggle type="button" aria-label="Pause background animation" aria-pressed="false" hidden>
         <svg class="pause-icon" width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><rect x="2" y="2" width="2.5" height="8" rx=".5" /><rect x="7.5" y="2" width="2.5" height="8" rx=".5" /></svg>
         <svg class="play-icon" width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="m3 1.5 7 4.5-7 4.5z" /></svg>
@@ -22,15 +22,15 @@ import HeroIntro from '@/components/HeroIntro.astro';
 
 <style>
   @font-face {
-    font-family: 'Manrope';
-    src: url('/fonts/manrope-latin-700-normal.woff2') format('woff2');
+    font-family: 'Outfit';
+    src: url('/fonts/outfit-latin-700-normal.woff2') format('woff2');
     font-style: normal;
     font-weight: 700;
     font-display: swap;
   }
 
   .hero-name {
-    font-family: 'Manrope', 'Segoe UI', sans-serif;
+    font-family: 'Outfit', 'Segoe UI', sans-serif;
     font-size: clamp(2.75rem, 7.5vw, 7rem);
     font-weight: 700;
     line-height: 1.1;
