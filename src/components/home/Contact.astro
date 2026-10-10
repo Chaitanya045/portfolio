@@ -3,7 +3,7 @@ import { profile } from '@/data/resume';
 ---
 
 <section id="contact" class="wrap" aria-labelledby="contact-title"><div class="contact">
-  <p class="eyebrow">Contact / {profile.location}</p>
+  <p class="prompt-title">~/contact <small>{profile.location}</small></p>
   <h2 id="contact-title" class="display contact-title" data-reveal>Say hello<span class="caret" aria-hidden="true">_</span></h2>
   <div class="contact-row" data-reveal>
     <a class="contact-email" href={`mailto:${profile.email}`}>{profile.email} <span aria-hidden="true">↗</span></a>
@@ -23,8 +23,6 @@ import { profile } from '@/data/resume';
     padding-bottom: clamp(4rem, 8vw, 6rem);
     border-top: 1px solid var(--line);
   }
-
-  .eyebrow { color: var(--muted); }
 
   .contact-title {
     margin: 1.75rem 0 2.25rem;
