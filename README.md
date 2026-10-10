@@ -35,7 +35,7 @@ The home page uses a background-only adaptation of [Canvas UI Blaze](https://can
 
 The shader loads after the page is painted, renders in one WebGL pass with at most about 420,000 pixels, and caps animation at 30 FPS on desktop or 24 FPS on smaller screens. It pauses when hidden, off-screen, or manually paused. Reduced-motion preferences and unavailable WebGL use the static CSS background. There are no external texture assets or rendering dependencies.
 
-The home page also has a 1.2-second ignition intro: a vertical ember line rotates, expands horizontally, and opens into the background. It plays on every page load and reload, and skips for reduced motion. Keyboard or pointer interaction skips the intro immediately, and a timeout ensures it cannot block the page. The intro uses CSS transforms and adds no runtime dependency.
+The home page also has a 1.6-second ignition intro: a vertical ember line rotates, expands horizontally, and dissolves into a soft glow as the background opens with feathered edges. It plays on every page load and reload, and skips for reduced motion. Keyboard or pointer interaction skips the intro immediately, and a timeout ensures it cannot block the page. The intro uses CSS animation and adds no runtime dependency.
 
 ## Writing
 
