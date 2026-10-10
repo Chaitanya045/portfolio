@@ -24,15 +24,8 @@ const { title, description = 'Projects, case studies, and writing by Chaitanya.'
         (() => {
           // Decide before the first paint so the hero never flashes behind the intro.
           const root = document.documentElement;
-          const key = 'portfolio:ignition-seen:v1';
           const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-          try {
-            if (motion.matches || sessionStorage.getItem(key)) return;
-            sessionStorage.setItem(key, '1');
-          } catch {
-            // Unavailable storage should leave the page immediately usable.
-            return;
-          }
+          if (motion.matches) return;
 
           root.style.setProperty('--intro-line-scale', String(88 / window.innerWidth));
           root.dataset.intro = 'playing';
