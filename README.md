@@ -20,7 +20,7 @@ pnpm build       # Production output for Vercel
 
 ## Structure
 
-- `src/pages/`: file-based routes; the home page is a temporary placeholder.
+- `src/pages/`: file-based routes; the home page shows Chaitanya centered over the ambient background.
 - `src/layouts/BaseLayout.astro`: shared document metadata and global styles.
 - `src/components/`: interactive React components and reusable Astro components.
 - `src/styles/global.css`: Tailwind import, theme tokens, and base styles.
