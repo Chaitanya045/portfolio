@@ -9,6 +9,7 @@ import Intro from '@/components/home/Intro.astro';
 import SelectedWork from '@/components/home/SelectedWork.astro';
 import Experience from '@/components/home/Experience.astro';
 import Contact from '@/components/home/Contact.astro';
+import CommandMenu from '@/components/home/CommandMenu.astro';
 import { profile } from '@/data/resume';
 import { spring } from 'motion';
 
@@ -59,6 +60,7 @@ const nameSpring = String(spring(.45));
   </div>
   </main>
   <SiteFooter />
+  <CommandMenu />
 </BaseLayout>
 
 <script>
@@ -132,14 +134,6 @@ const nameSpring = String(spring(.45));
 </script>
 
 <style>
-  @font-face {
-    font-family: 'Outfit';
-    src: url('/fonts/outfit-latin-700-normal.woff2') format('woff2');
-    font-style: normal;
-    font-weight: 700;
-    font-display: swap;
-  }
-
   .hero-title { position: relative; }
 
   /* Roles and social links hang below the name without shifting it off centre. */

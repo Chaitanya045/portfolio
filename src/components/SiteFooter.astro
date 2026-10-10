@@ -1,16 +1,15 @@
 ---
-import Logo from '@/components/Logo.astro';
 import { profile } from '@/data/resume';
 ---
 
 <footer class="site-footer">
   <div class="wrap"><div class="footer-inner">
-    <span class="footer-logo"><Logo size={28} /></span>
-    <p class="kicker">© {new Date().getFullYear()} {profile.name}</p>
-    <a href="#" class="kicker to-top">
-      Back to top
-      <span class="to-top-arrow" aria-hidden="true"><span>↑</span></span>
-    </a>
+    <p>© {new Date().getFullYear()} {profile.name}</p>
+    <nav aria-label="Elsewhere">
+      <a href={profile.github} target="_blank" rel="noopener noreferrer">GitHub ↗<span class="sr-only"> (opens in a new tab)</span></a>
+      <a href={profile.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn ↗<span class="sr-only"> (opens in a new tab)</span></a>
+      <a href="/blog/">Blog</a>
+    </nav>
   </div></div>
 </footer>
 
@@ -18,53 +17,22 @@ import { profile } from '@/data/resume';
   .site-footer {
     position: relative;
     z-index: 1;
-    color: var(--text);
+    color: var(--muted);
     background: var(--bg);
+    font-size: .875rem;
   }
 
   .footer-inner {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem;
-    padding-top: 1.5rem;
-    padding-bottom: 2rem;
+    gap: 1rem 2rem;
+    padding: 1.75rem 0 2.5rem;
     border-top: 1px solid var(--line);
   }
 
-  .footer-logo { color: var(--accent); }
-
-  .to-top {
-    display: inline-flex;
-    align-items: center;
-    gap: .5rem;
-    transition: color .2s ease;
-  }
-
-  .to-top-arrow {
-    display: grid;
-    place-items: center;
-    width: 1.75rem;
-    height: 1.75rem;
-    border: 1px solid var(--line);
-    border-radius: 50%;
-    overflow: hidden;
-    transition: border-color .2s ease;
-  }
-
-  .to-top-arrow span { display: block; }
-  .to-top:hover { color: var(--text); }
-  .to-top:hover .to-top-arrow { border-color: var(--accent); }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .to-top:hover .to-top-arrow span { animation: arrow-loop .5s var(--ease-out); }
-  }
-
-  /* The arrow exits upward and re-enters from below. */
-  @keyframes arrow-loop {
-    0% { transform: none; }
-    45% { transform: translateY(-140%); }
-    46% { transform: translateY(140%); }
-    100% { transform: none; }
-  }
+  nav { display: flex; gap: 2rem; }
+  a { transition: color .2s ease; }
+  a:hover, a:focus-visible { color: var(--text); }
 </style>

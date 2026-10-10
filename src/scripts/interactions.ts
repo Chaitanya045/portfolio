@@ -3,7 +3,6 @@
 
 const root = document.documentElement;
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
 
 // Let the logo draw itself once the hero intro has finished.
 if (root.hasAttribute('data-intro')) {
@@ -26,42 +25,6 @@ if (!reducedMotion.matches && 'IntersectionObserver' in window) {
   }, { rootMargin: '0px 0px -10% 0px' });
   root.setAttribute('data-reveal-ready', '');
   revealTargets.forEach((target) => observer.observe(target));
-}
-
-// A label pill trails the pointer over [data-cursor] areas, easing toward it each frame.
-const cursorAreas = document.querySelectorAll<HTMLElement>('[data-cursor]');
-if (cursorAreas.length) {
-  const pill = document.createElement('div');
-  pill.className = 'cursor-pill';
-  pill.setAttribute('aria-hidden', 'true');
-  document.body.append(pill);
-  let x = 0, y = 0, targetX = 0, targetY = 0, frame = 0;
-
-  const follow = () => {
-    x += (targetX - x) * .2;
-    y += (targetY - y) * .2;
-    pill.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-    frame = Math.abs(targetX - x) + Math.abs(targetY - y) > .3 ? requestAnimationFrame(follow) : 0;
-  };
-
-  cursorAreas.forEach((area) => {
-    area.addEventListener('pointerenter', (event) => {
-      if (event.pointerType !== 'mouse' || !finePointer.matches || reducedMotion.matches) return;
-      pill.textContent = area.dataset.cursor ?? '';
-      x = targetX = event.clientX;
-      y = targetY = event.clientY;
-      pill.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-      pill.setAttribute('data-visible', '');
-    });
-    area.addEventListener('pointermove', (event) => {
-      if (!pill.hasAttribute('data-visible')) return;
-      targetX = event.clientX;
-      targetY = event.clientY;
-      if (!frame) frame = requestAnimationFrame(follow);
-    });
-    area.addEventListener('pointerleave', () => pill.removeAttribute('data-visible'));
-  });
-  addEventListener('scroll', () => pill.removeAttribute('data-visible'), { passive: true });
 }
 
 // Copy buttons swap their label briefly and announce the result.

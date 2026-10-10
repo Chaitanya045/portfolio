@@ -51,3 +51,6 @@ export const experience: Job[] = [
     tech: ['Java', 'Selenium', 'RestAssured', 'TestNG', 'Jenkins'],
   },
 ];
+
+// Stable anchor for a job, e.g. "IronRod Health" -> "ironrod-health".
+export const jobId = (company: string) => company.toLowerCase().replace(/[^a-z0-9]+/g, '-');

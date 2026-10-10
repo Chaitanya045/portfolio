@@ -21,6 +21,8 @@ const work = defineCollection({
     summary: z.string(),
     period: z.string(),
     order: z.number(),
+    // A short label such as "Proof of concept", shown beside the title.
+    badge: z.string().optional(),
     role: z.string(),
     stack: z.array(z.string()),
     url: z.url(),

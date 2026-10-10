@@ -33,7 +33,9 @@ pnpm build       # Production output for Vercel
 
 `@/` resolves to `src/`. Add an Astro `client:*` directive only when a React component needs browser interactivity. `WaveButton.tsx` is a removable Motion example with a reduced-motion policy.
 
-Below the hero, pages use self-hosted Instrument Serif for headings, Inter for text and JetBrains Mono for small labels, all under the SIL Open Font License (see `licenses/`). Project cards morph into their case studies with cross-document view transitions where supported.
+Below the hero, the home page uses a developer-tool style with no images: a short introduction, a `~/projects` index, `~/experience` and contact. Headings use the hero's self-hosted Outfit Bold, body text uses Inter, and JetBrains Mono appears in the prompt labels and the terminal-style project cover. All three are under the SIL Open Font License (see `licenses/`).
+
+A blue `›` cursor travels between projects, following the reading position as you scroll and jumping to whichever project is hovered or focused. `⌘K` / `Ctrl K`, or the "Jump to…" button, opens a searchable menu of projects, roles and contact links (`src/components/home/CommandMenu.astro`). A project can carry a `badge` in its front matter, such as Zace's "Proof of concept"; it appears beside the project type on the home page and the case study. Clicking a project title morphs it into its case study with cross-document view transitions where supported.
 
 The hero name uses self-hosted Outfit Bold, a geometric sans with subtle letter spacing. Only the 700-weight Latin WOFF2 file is loaded, preloaded on the home page. Its SIL Open Font License is retained in `licenses/outfit.txt`.
 

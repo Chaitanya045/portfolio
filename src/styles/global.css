@@ -1,8 +1,17 @@
 @import "tailwindcss";
 
+/* Outfit Bold is the hero's display face; headings across the site reuse it. */
+@font-face {
+  font-family: 'Outfit';
+  src: url('/fonts/outfit-latin-700-normal.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
 @theme {
   --font-sans: "Inter Variable", "Segoe UI", sans-serif;
-  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-display: "Outfit", "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
   --color-paper: #070b16;
   --color-ink: #e6ecf7;
@@ -14,8 +23,9 @@
   --bg: #070b16;
   --surface: #0d1426;
   --text: #e6ecf7;
-  --muted: #94a1ba;
-  --line: #1e2a44;
+  --body: #c4cede;
+  --muted: #a3afc7;
+  --line: #232d44;
   --accent: #6d9bff;
   --accent-strong: #4f7dff;
   --ease-out: cubic-bezier(.22, 1, .36, 1);
@@ -29,7 +39,8 @@
 }
 
 @layer base {
-  html { background: var(--color-paper); color: var(--color-ink); }
+  /* Keep jumped-to headings clear of the floating header. */
+  html { background: var(--color-paper); color: var(--color-ink); scroll-padding-top: 6rem; }
   body { margin: 0; min-width: 320px; }
   ::selection { background: #1f3f8a; color: #eef4ff; }
   :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 5px; }
@@ -71,21 +82,42 @@
 /* Shared layout for the pages below the hero. */
 .sheet { position: relative; z-index: 1; background: var(--bg); color: var(--text); }
 .wrap { max-width: 76rem; margin: 0 auto; padding: 0 1.5rem; }
-.kicker { color: var(--muted); font-family: var(--font-mono); font-size: .75rem; letter-spacing: .04em; }
-.serif { font-family: var(--font-serif); font-weight: 400; }
+.kicker { color: var(--muted); font-size: .8125rem; letter-spacing: .01em; }
+.eyebrow { color: var(--accent); font-size: .75rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; }
+/* Terminal-style section labels, such as "~/projects  03 side projects". */
+.prompt-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--accent);
+  font: 400 1rem/1.5 var(--font-mono);
+}
+.prompt-title small { color: var(--muted); font-size: .75rem; }
+/* A small outlined label, e.g. "Proof of concept". */
+.badge {
+  display: inline-block;
+  margin-left: .6rem;
+  padding: .05rem .5rem;
+  border: 1px solid #6d9bff59;
+  border-radius: 999px;
+  color: #a9c6ff;
+  font-size: .75rem;
+  line-height: 1.5;
+  vertical-align: .1em;
+}
+.display { font-family: var(--font-display); font-weight: 700; letter-spacing: -.035em; }
 .section-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--line);
 }
-.section-title { font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 1; }
+.section-title { font-size: clamp(2.25rem, 5vw, 3.5rem); line-height: 1.05; }
 
 /* Reveals: content is visible unless the script opts the page in. */
 @media (prefers-reduced-motion: no-preference) {
   html[data-reveal-ready] [data-reveal] { transition: opacity .9s var(--ease-out), transform .9s var(--ease-out); }
-  html[data-reveal-ready] [data-reveal]:not([data-revealed]) { opacity: 0; transform: translateY(28px); }
+  html[data-reveal-ready] [data-reveal]:not([data-revealed]) { opacity: 0; transform: translateY(16px); }
 
   /* Titles rise out of a clipped line instead of fading. */
   html[data-reveal-ready] [data-reveal='title'] { opacity: 1; transform: none; overflow: clip; padding-bottom: .08em; }
@@ -93,23 +125,3 @@
   html[data-reveal-ready] [data-reveal='title']:not([data-revealed]) { opacity: 1; transform: none; }
   html[data-reveal-ready] [data-reveal='title']:not([data-revealed]) > span { transform: translateY(105%); }
 }
-
-.cursor-pill {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 60;
-  padding: .55rem .9rem;
-  border-radius: 999px;
-  color: #070b16;
-  background: var(--accent);
-  font-size: .8rem;
-  font-weight: 500;
-  white-space: nowrap;
-  pointer-events: none;
-  translate: 14px 14px;
-  scale: .4;
-  opacity: 0;
-  transition: opacity .2s ease, scale .35s var(--ease-out);
-}
-.cursor-pill[data-visible] { opacity: 1; scale: 1; }

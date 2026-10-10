@@ -1,47 +1,151 @@
 ---
 import { getCollection } from 'astro:content';
-import WorkCard from '@/components/work/WorkCard.astro';
 
 const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
-// Editorial grid: a lead project, a second set lower beside it, then one centred below.
-const layout = ['lead', 'side', 'base'];
 ---
 
-<section id="work" class="work wrap" aria-labelledby="work-title">
-  <div class="section-head">
-    <h2 id="work-title" class="serif section-title" data-reveal="title"><span>Selected work</span></h2>
-    <span class="kicker">({String(work.length).padStart(2, '0')})</span>
-  </div>
-  <div class="work-grid">
-    {work.map((entry, index) => (
-      <WorkCard
-        entry={entry}
-        index={index}
-        class={`work-${layout[index] ?? 'base'}`}
-        sizes={index === 0 ? '(min-width: 64rem) 680px, 100vw' : '(min-width: 64rem) 560px, 100vw'}
-      />
-    ))}
-  </div>
+<section id="work" class="projects wrap" aria-labelledby="work-title" data-projects>
+  <span class="index-cursor" aria-hidden="true" data-index-cursor>›</span>
+  <h2 id="work-title" class="prompt-title">~/projects <small>{String(work.length).padStart(2, '0')} side projects</small></h2>
+  {work.map(({ id, data }) => (
+    <article class="project" id={id} data-project data-reveal>
+      <p class="project-kind">{data.kind}{data.badge && <span class="badge">{data.badge}</span>}</p>
+      <div class="project-head">
+        <h3 class="display project-title">
+          <a href={`/work/${id}/`} style={`view-transition-name: title-${id}`}>{data.title}<span class="project-arrow" aria-hidden="true"> →</span></a>
+        </h3>
+        <p class="project-when">{data.period}<span>{data.role}</span></p>
+      </div>
+      <p class="project-summary">{data.summary}</p>
+      <p class="project-stack">
+        {data.stack.map((tool, index) => <>{index > 0 && <span aria-hidden="true"> / </span>}{tool}</>)}
+      </p>
+    </article>
+  ))}
 </section>
 
-<style>
-  .work { padding-bottom: clamp(4rem, 9vw, 7rem); }
+<script>
+  // One prompt cursor travels between projects: it follows the reading position while
+  // scrolling and jumps to whichever project is hovered or focused.
+  const section = document.querySelector<HTMLElement>('[data-projects]');
+  const cursor = section?.querySelector<HTMLElement>('[data-index-cursor]');
 
-  .work-grid {
-    display: grid;
-    gap: 4rem;
-    margin-top: 3rem;
+  if (section && cursor) {
+    const rows = [...section.querySelectorAll<HTMLElement>('[data-project]')];
+    let frame = 0;
+
+    const select = (row: HTMLElement) => {
+      rows.forEach((item) => item.toggleAttribute('data-active', item === row));
+      const title = row.querySelector<HTMLElement>('.project-title')!;
+      const offset = title.getBoundingClientRect().top - section.getBoundingClientRect().top;
+      cursor.style.transform = `translateY(${offset + title.offsetHeight / 2}px) translateY(-50%)`;
+      cursor.setAttribute('data-ready', '');
+    };
+
+    const follow = () => {
+      frame = 0;
+      const line = innerHeight * .38;
+      const nearest = rows.reduce((best, row) =>
+        Math.abs(row.getBoundingClientRect().top - line) < Math.abs(best.getBoundingClientRect().top - line) ? row : best);
+      select(nearest);
+    };
+
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(follow); };
+    addEventListener('scroll', schedule, { passive: true });
+    addEventListener('resize', schedule);
+    rows.forEach((row) => {
+      row.addEventListener('pointerenter', () => select(row));
+      row.addEventListener('focusin', () => select(row));
+    });
+    document.fonts.ready.then(schedule);
+  }
+</script>
+
+<style>
+  .projects { position: relative; }
+
+  .index-cursor {
+    position: absolute;
+    top: 0;
+    left: 1.5rem;
+    color: var(--accent);
+    font: 700 2.6rem/1 var(--font-display);
+    text-shadow: 0 0 22px #6d9bff80;
+    pointer-events: none;
+    opacity: 0;
+    transition: transform .45s var(--ease-out), opacity .3s ease;
   }
 
-  @media (min-width: 64rem) {
-    .work-grid {
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-      column-gap: 2rem;
-      row-gap: 5rem;
-    }
+  .index-cursor[data-ready] { opacity: 1; }
 
-    .work-grid :global(.work-lead) { grid-column: 1 / 8; }
-    .work-grid :global(.work-side) { grid-column: 8 / 13; margin-top: 9rem; }
-    .work-grid :global(.work-base) { grid-column: 3 / 10; }
+  .prompt-title { margin-bottom: .5rem; }
+
+  .project {
+    padding: 2rem 0 2.25rem 2.6rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .project-kind { color: var(--muted); font-size: .875rem; }
+
+  .project-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+  }
+
+  .project-title {
+    margin: .3rem 0 .9rem;
+    font-size: clamp(2.75rem, 5vw, 4.1rem);
+    line-height: 1.04;
+  }
+
+  .project-title a { transition: color .3s ease; }
+  .project[data-active] .project-title a,
+  .project-title a:focus-visible { color: var(--accent); }
+
+  .project-arrow {
+    display: inline-block;
+    font-size: .75em;
+    transition: transform .4s var(--ease-out);
+  }
+
+  .project[data-active] .project-arrow { transform: translateX(.2em); }
+
+  .project-when {
+    flex: none;
+    color: var(--muted);
+    font-size: .875rem;
+    text-align: right;
+  }
+
+  .project-when span { display: block; margin-top: .3rem; color: var(--accent); }
+
+  .project-summary {
+    max-width: 44rem;
+    color: var(--body);
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    text-wrap: pretty;
+  }
+
+  .project-stack {
+    margin-top: 1rem;
+    color: var(--muted);
+    font-size: .8125rem;
+  }
+
+  .project-stack span { color: #52617d; }
+
+  @media (max-width: 44rem) {
+    .index-cursor { font-size: 1.8rem; }
+    .project { padding-left: 1.6rem; }
+    .project-head { display: block; }
+    .project-when { margin: 0 0 1rem; text-align: left; }
+    .project-when span { display: inline; margin-left: .6rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .index-cursor, .project-title a, .project-arrow { transition: none; }
   }
 </style>

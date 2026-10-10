@@ -15,7 +15,7 @@ const format = (date: Date) => date.toLocaleDateString('en-GB', { day: 'numeric'
   <main id="main" class="sheet blog">
     <div class="wrap">
       <div class="section-head">
-        <h1 class="serif section-title" data-reveal="title"><span>Blog</span></h1>
+        <h1 class="display section-title" data-reveal="title"><span>Blog</span></h1>
         <span class="kicker">({String(posts.length).padStart(2, '0')})</span>
       </div>
 
@@ -23,10 +23,10 @@ const format = (date: Date) => date.toLocaleDateString('en-GB', { day: 'numeric'
         <ol class="posts">
           {posts.map((post) => (
             <li data-reveal>
-              <a href={`/blog/${post.id}/`} class="post" data-cursor="Read post →">
+              <a href={`/blog/${post.id}/`} class="post">
                 <time class="kicker" datetime={post.data.publishedAt.toISOString()}>{format(post.data.publishedAt)}</time>
                 <span>
-                  <span class="serif post-title">{post.data.title}{post.data.draft && <span class="kicker post-draft">draft</span>}</span>
+                  <span class="display post-title">{post.data.title}{post.data.draft && <span class="kicker post-draft">draft</span>}</span>
                   <span class="post-description">{post.data.description}</span>
                 </span>
                 <span class="post-arrow" aria-hidden="true">→</span>
@@ -51,54 +51,44 @@ const format = (date: Date) => date.toLocaleDateString('en-GB', { day: 'numeric'
   .posts {
     position: relative;
     z-index: 0;
-    margin: 2.5rem 0 0;
+    margin: 1.5rem 0 0;
     padding: 0;
     list-style: none;
   }
 
   .post {
-    position: relative;
     display: grid;
-    gap: .75rem;
-    padding: 2rem 0;
-    border-top: 1px solid var(--line);
+    grid-template-columns: 1fr auto;
+    gap: .35rem 1.5rem;
+    align-items: baseline;
+    padding: 1.35rem 0;
+    transition: opacity .35s ease;
   }
 
-  @media (min-width: 48rem) {
-    .post { grid-template-columns: 10rem 1fr auto; align-items: baseline; gap: 2rem; }
-  }
+  .post time { grid-column: 1 / -1; grid-row: 1; }
 
-  .post::before {
-    content: '';
-    position: absolute;
-    inset: 0 -1.5rem;
-    z-index: -1;
-    background: linear-gradient(90deg, var(--surface), transparent);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform .6s var(--ease-out);
+  /* Hovering one post quietly dims the others. */
+  @media (hover: hover) {
+    .posts:has(.post:hover) .post:not(:hover) { opacity: .4; }
   }
-
-  .post:hover::before { transform: scaleX(1); }
 
   .post-title {
     display: flex;
     align-items: baseline;
     gap: .75rem;
-    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
-    line-height: 1.1;
+    font-size: 1.5rem;
+    line-height: 1.2;
     transition: color .3s ease;
   }
 
-  .post:hover .post-title { color: var(--accent); }
+  .post:hover .post-title { color: #fff; }
   .post-draft { padding: .1rem .45rem; border: 1px solid var(--line); border-radius: 999px; }
 
   .post-description {
     display: block;
-    max-width: 40rem;
-    margin-top: .5rem;
-    color: var(--muted);
-    line-height: 1.6;
+    margin-top: .35rem;
+    color: var(--body);
+    line-height: 1.7;
   }
 
   .post-arrow {
@@ -108,19 +98,15 @@ const format = (date: Date) => date.toLocaleDateString('en-GB', { day: 'numeric'
 
   .post:hover .post-arrow { color: var(--accent); transform: translateX(6px); }
 
-  @media (hover: hover) and (pointer: fine) { .post { cursor: none; } }
-
   .empty {
-    max-width: 34rem;
-    margin-top: 2.5rem;
-    color: var(--muted);
-    font-size: 1.1rem;
+    margin-top: 1.5rem;
+    color: var(--body);
+    font-size: 1.0625rem;
     line-height: 1.7;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .post::before, .post-title, .post-arrow { transition: none; }
+    .post, .post-title, .post-arrow { transition: none; }
     .post:hover .post-arrow { transform: none; }
-    .post { cursor: pointer; }
   }
 </style>

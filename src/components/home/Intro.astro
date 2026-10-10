@@ -1,65 +1,84 @@
 ---
-import { experience, profile } from '@/data/resume';
-
-const [current, previous] = experience;
-const facts = [
-  { label: 'Now', value: `${current.role}, ${current.company}` },
-  { label: 'Before', value: `${previous.role}, ${previous.company}` },
-  { label: 'Based in', value: profile.location },
-];
+import { profile } from '@/data/resume';
 ---
 
 <section class="intro wrap" aria-labelledby="intro-title">
+  <div class="intro-bar">
+    <p class="eyebrow">{profile.name.split(' ')[0]} / {profile.title}</p>
+    <button type="button" class="jump" data-command-open aria-haspopup="dialog">
+      Jump to… <kbd data-shortcut>Ctrl K</kbd>
+    </button>
+  </div>
   <div class="intro-grid">
-    <dl class="intro-facts" data-reveal>
-      {facts.map((fact) => (
-        <div>
-          <dt class="kicker">{fact.label}</dt>
-          <dd>{fact.value}</dd>
-        </div>
-      ))}
-    </dl>
-    <div>
-      <h2 id="intro-title" class="serif intro-statement" data-reveal>{profile.statement}</h2>
-      <p class="intro-summary" data-reveal>{profile.summary}</p>
-    </div>
+    <h2 id="intro-title" class="display intro-statement" data-reveal>{profile.statement}</h2>
+    <p class="intro-summary" data-reveal>{profile.summary}</p>
   </div>
 </section>
 
+<script>
+  // Show the shortcut the way this platform writes it.
+  const isMac = /Mac|iPhone|iPad/.test(navigator.platform);
+  document.querySelectorAll<HTMLElement>('[data-shortcut]').forEach((key) => {
+    key.textContent = isMac ? '⌘ K' : 'Ctrl K';
+  });
+</script>
+
 <style>
-  .intro { padding-top: clamp(4rem, 9vw, 7rem); padding-bottom: clamp(4rem, 9vw, 7rem); }
+  .intro { padding-top: clamp(4rem, 8vw, 6rem); }
+
+  .intro-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 1.75rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .jump {
+    padding: .6rem 0;
+    border: 0;
+    color: var(--muted);
+    background: none;
+    font: inherit;
+    font-size: .8125rem;
+    cursor: pointer;
+    transition: color .2s ease;
+  }
+
+  .jump:hover { color: var(--text); }
+
+  .jump kbd {
+    margin-left: .9rem;
+    padding: .15rem .35rem;
+    border-bottom: 1px solid #6b7892;
+    font: .75rem var(--font-mono);
+  }
 
   .intro-grid {
     display: grid;
-    gap: 2.5rem;
+    gap: 2rem;
+    padding: clamp(2.5rem, 5vw, 4rem) 0 clamp(3rem, 6vw, 4.75rem);
   }
 
-  @media (min-width: 56rem) {
-    .intro-grid { grid-template-columns: 16rem 1fr; gap: 4rem; }
+  @media (min-width: 60rem) {
+    .intro-grid { grid-template-columns: 1.25fr 1fr; gap: 6rem; }
   }
-
-  .intro-facts {
-    display: grid;
-    gap: 1.1rem;
-    align-content: start;
-    padding-top: .6rem;
-  }
-
-  .intro-facts dd { margin-top: .2rem; font-size: .95rem; }
 
   .intro-statement {
-    max-width: 46rem;
-    font-size: clamp(2.25rem, 5vw, 4rem);
-    line-height: 1.05;
-    letter-spacing: -.01em;
+    font-size: clamp(2.1rem, 4vw, 3.25rem);
+    line-height: 1.12;
     text-wrap: balance;
   }
 
   .intro-summary {
-    max-width: 38rem;
-    margin-top: 1.75rem;
-    color: var(--muted);
-    font-size: 1.05rem;
-    line-height: 1.7;
+    color: var(--body);
+    font-size: 1.0625rem;
+    line-height: 1.8;
+    text-wrap: pretty;
+  }
+
+  @media (max-width: 40rem) {
+    .jump kbd { display: none; }
   }
 </style>
