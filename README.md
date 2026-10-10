@@ -29,7 +29,7 @@ pnpm build       # Production output for Vercel
 
 `@/` resolves to `src/`. Add an Astro `client:*` directive only when a React component needs browser interactivity. `WaveButton.tsx` is a removable Motion example with a reduced-motion policy.
 
-The hero name uses self-hosted Syne ExtraBold with wider letter spacing. Only the 800-weight Latin WOFF2 file is loaded (13.7 KB), preloaded on the home page. Its SIL Open Font License is retained in `licenses/syne.txt`.
+The hero name uses self-hosted Manrope Bold with subtle letter spacing. Only the 700-weight Latin WOFF2 file is loaded, preloaded on the home page. Its SIL Open Font License is retained in `licenses/manrope.txt`.
 
 ## Ambient background
 
