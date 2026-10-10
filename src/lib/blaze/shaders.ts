@@ -71,6 +71,9 @@ uniform float uSmoke;
 uniform float uGlow;
 uniform vec3 uSparkColor;
 uniform vec3 uSmokeColor;
+uniform vec2 uMouse;
+uniform vec2 uMouseVel;
+uniform float uMouseStrength;
 
 #define MOVE_DIR vec2(0.0, -1.0)
 #define MOVE_SPEED 0.5
@@ -171,7 +174,16 @@ void main () {
   }
 
   float aspect = uResolution.x / uResolution.y;
+
   vec2 fireUv = vec2((uv.x - 0.5) * aspect * 3.2, mix(-0.7, 1.6, fy));
+
+  // Pointer force field, applied to the sparks only: sample closer to the cursor so they
+  // appear pushed outward, and against the pointer's motion so they trail in its wake.
+  vec2 toMouse = (uv - uMouse) * vec2(aspect, 1.0);
+  float field = exp(-dot(toMouse, toMouse) / 0.05) * uMouseStrength;
+  vec2 push = toMouse / vec2(aspect, 1.0) * 0.6 * field;
+  vec2 warped = uv - push - uMouseVel * 0.045 * field;
+  vec2 sparkUv = vec2((warped.x - 0.5) * aspect * 3.2, mix(-0.7, 1.6, warped.y / zone));
 
   float smokeIntensity = 0.0;
   if (uSmoke > 0.001) {
@@ -183,7 +195,8 @@ void main () {
 
   vec3 particles = vec3(0.0);
   if (uSparks > 0.001) {
-    particles = layeredParticles(fireUv, 1.01, 0.9, uLayers, smokeIntensity) * uSparks;
+    particles = layeredParticles(sparkUv, 1.01, 0.9, uLayers, smokeIntensity) * uSparks;
+    particles *= 1.0 + 1.4 * field;
   }
 
   float fade = 1.0 - smoothstep(0.55, 1.0, fy);

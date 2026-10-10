@@ -4,6 +4,7 @@ const roles = [
   'Full Stack Engineer',
   'Applied AI Engineer',
   'QA Automation Engineer',
+  'Vibe Coder',
 ];
 ---
 
@@ -57,12 +58,7 @@ const roles = [
 <style>
   .role-scroller {
     --role-play-state: running;
-    position: absolute;
-    top: calc(100% + clamp(1rem, 2vw, 1.75rem));
-    left: 50%;
-    transform: translateX(-50%);
-    width: min(calc(100vw - 48px), 40rem);
-    color: #cfb3a4;
+    color: #a9b6cf;
     font-family: 'Outfit', 'Segoe UI', sans-serif;
     font-size: clamp(.8rem, 1.1vw, 1rem);
     font-weight: 700;
@@ -78,7 +74,7 @@ const roles = [
   }
 
   .role-track {
-    animation: roles-scroll 16s cubic-bezier(.65, 0, .35, 1) infinite;
+    animation: roles-scroll 20s cubic-bezier(.65, 0, .35, 1) infinite;
     animation-play-state: var(--role-play-state);
   }
 
@@ -94,13 +90,13 @@ const roles = [
     height: 1px;
     margin: .75rem auto 0;
     overflow: hidden;
-    background: #ea916b24;
+    background: #7aa7ff24;
   }
 
   .role-progress-fill {
     display: block;
     height: 100%;
-    background: linear-gradient(90deg, #c16b45, #ea916b);
+    background: linear-gradient(90deg, #3d6be0, #7aa7ff);
     transform-origin: left;
     opacity: .8;
     animation: role-progress 4s linear infinite;
@@ -112,14 +108,15 @@ const roles = [
     to { transform: scaleX(1); }
   }
 
-  /* Four readable holds and a duplicate first row make the loop seamless. */
+  /* Five readable holds (3.2s each, then a 0.8s slide) and a duplicate first row make the loop seamless. */
   @keyframes roles-scroll {
-    0%, 20% { transform: translateY(0); opacity: 1; filter: blur(0); }
-    25%, 45% { transform: translateY(-20%); opacity: 1; filter: blur(0); }
-    50%, 70% { transform: translateY(-40%); opacity: 1; filter: blur(0); }
-    75%, 95% { transform: translateY(-60%); opacity: 1; filter: blur(0); }
-    100% { transform: translateY(-80%); opacity: 1; filter: blur(0); }
-    22.5%, 47.5%, 72.5%, 97.5% { opacity: .35; filter: blur(2px); }
+    0%, 16% { transform: translateY(0); opacity: 1; filter: blur(0); }
+    20%, 36% { transform: translateY(-16.6667%); opacity: 1; filter: blur(0); }
+    40%, 56% { transform: translateY(-33.3333%); opacity: 1; filter: blur(0); }
+    60%, 76% { transform: translateY(-50%); opacity: 1; filter: blur(0); }
+    80%, 96% { transform: translateY(-66.6667%); opacity: 1; filter: blur(0); }
+    100% { transform: translateY(-83.3333%); opacity: 1; filter: blur(0); }
+    18%, 38%, 58%, 78%, 98% { opacity: .35; filter: blur(2px); }
   }
 
   :global(html[data-intro='playing']) .role-scroller,
@@ -129,7 +126,7 @@ const roles = [
     --role-play-state: paused;
   }
 
-  .role-scroller[data-reading] { color: #f0c5ad; }
+  .role-scroller[data-reading] { color: #c4d6ff; }
 
   @media (prefers-reduced-motion: reduce) {
     .role-track { animation: none; }

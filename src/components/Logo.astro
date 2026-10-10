@@ -1,5 +1,5 @@
 ---
-// C/S monogram: blocky italic C and S split by a slash, inside a ring.
+// C/S ribbon monogram: an outer chevron C that folds into an inner S as one continuous shape.
 interface Props {
   size?: number | string;
   class?: string;
@@ -7,63 +7,77 @@ interface Props {
 }
 
 const { size = 40, class: className, title } = Astro.props;
+// Each instance needs its own gradient id; the header and footer both render the logo.
+const gradientId = `logo-gradient-${Math.random().toString(36).slice(2, 8)}`;
+const ribbon = 'M315 150H885V280H382L220 512L382 742H693L668 705H520L384 512L525 310H885V440H593L544 512L587 574H735L945 873H315L60 512Z';
 ---
 
 <svg
   class:list={['logo', className]}
   width={size}
   height={size}
-  viewBox="0 0 100 100"
+  viewBox="40 50 925 925"
   fill="none"
   role={title ? 'img' : undefined}
   aria-label={title}
   aria-hidden={title ? undefined : 'true'}
 >
-  <circle class="logo-ring" cx="50" cy="50" r="45" stroke="currentColor" stroke-width="4" pathLength="100" />
-  <g fill="currentColor" transform="translate(50 50) skewX(-20) translate(-50 -50)">
-    <path class="logo-c" d="M19 25H43V31.5H25.5V42.5H43V49H19Z" />
-    <path class="logo-slash" d="M45 21H54V79H45Z" />
-    <path class="logo-s" d="M57 51H81V57.5H63.5V59.5H81V75H57V68.5H74.5V66.5H57Z" />
-  </g>
+  <defs>
+    <linearGradient id={gradientId} x1="60" y1="150" x2="945" y2="873" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#b9d0ff" />
+      <stop offset=".5" stop-color="#7aa7ff" />
+      <stop offset="1" stop-color="#4f7dff" />
+    </linearGradient>
+  </defs>
+  <path class="logo-fill" d={ribbon} fill={`url(#${gradientId})`} />
+  <path class="logo-outline" d={ribbon} stroke="#b9d0ff" stroke-width="14" stroke-linejoin="round" pathLength="100" />
 </svg>
 
 <style>
-  .logo { overflow: visible; }
-
-  .logo-ring {
-    transform-origin: 50% 50%;
-    transform: rotate(-90deg);
+  .logo {
+    overflow: visible;
+    transition: transform .45s var(--ease-out), filter .45s ease;
   }
 
-  .logo-c, .logo-s, .logo-slash {
-    transform-box: fill-box;
-    transform-origin: center;
-    transition: transform .45s var(--ease-out);
+  .logo-outline { opacity: 0; }
+
+  /* Hovering the logo's link nudges the chevron forward and lights it up. */
+  :global(a:hover) > .logo,
+  :global(a:focus-visible) > .logo {
+    transform: translateX(-2px);
+    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--accent-strong) 70%, transparent));
   }
 
-  /* Hovering the logo's link pulls the letters apart along the slash. */
-  :global(a:hover) > .logo .logo-c,
-  :global(a:focus-visible) > .logo .logo-c { transform: translate(-5px, -4px); }
-  :global(a:hover) > .logo .logo-s,
-  :global(a:focus-visible) > .logo .logo-s { transform: translate(5px, 4px); }
-  :global(a:hover) > .logo .logo-slash,
-  :global(a:focus-visible) > .logo .logo-slash { transform: scaleY(1.12); }
-
-  /* After the hero intro, the ring draws itself once. */
+  /* After the hero intro, the ribbon traces its outline and then fills in. */
   @media (prefers-reduced-motion: no-preference) {
-    :global(html[data-intro]) .logo-ring { stroke-dasharray: 100; stroke-dashoffset: 100; }
-    :global(html[data-intro-done]) .logo-ring {
+    :global(html[data-intro]) .logo-fill { opacity: 0; }
+    :global(html[data-intro]) .logo-outline { opacity: 1; stroke-dasharray: 100; stroke-dashoffset: 100; }
+
+    :global(html[data-intro-done]) .logo-outline {
       stroke-dasharray: 100;
-      animation: logo-draw 1.4s var(--ease-out) both;
+      animation: logo-trace 1.1s var(--ease-out) both, logo-outline-out .5s ease 1s both;
     }
+
+    :global(html[data-intro-done]) .logo-fill { animation: logo-fill .6s ease .75s both; }
   }
 
-  @keyframes logo-draw {
-    from { stroke-dashoffset: 100; }
-    to { stroke-dashoffset: 0; }
+  @keyframes logo-trace {
+    from { opacity: 1; stroke-dashoffset: 100; }
+    to { opacity: 1; stroke-dashoffset: 0; }
+  }
+
+  @keyframes logo-outline-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @keyframes logo-fill {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .logo-c, .logo-s, .logo-slash { transition: none; }
+    .logo { transition: none; }
+    :global(a:hover) > .logo { transform: none; }
   }
 </style>
