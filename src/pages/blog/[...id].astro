@@ -1,0 +1,29 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => import.meta.env.DEV || !data.draft);
+  return posts.map((post) => ({ params: { id: post.id }, props: { post } }));
+}
+
+interface Props { post: CollectionEntry<'blog'>; }
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<BaseLayout title={`${post.data.title} — Chaitanya`} description={post.data.description}>
+  <main id="main" class="mx-auto max-w-3xl px-6 py-16">
+    <a href="/" class="text-sm text-accent underline underline-offset-4">← Home</a>
+    {post.data.draft && <p class="mt-8 text-sm text-ink/60">Draft preview</p>}
+    <h1 class="mt-6 text-4xl font-medium tracking-tight">{post.data.title}</h1>
+    <time datetime={post.data.publishedAt.toISOString()} class="mt-3 block text-sm text-ink/60">
+      {post.data.publishedAt.toLocaleDateString('en', { dateStyle: 'long', timeZone: 'UTC' })}
+    </time>
+    <article class="mt-10 space-y-6 leading-relaxed [&_h2]:mt-10 [&_h2]:text-2xl [&_h2]:font-medium [&_a]:underline">
+      <Content />
+    </article>
+  </main>
+</BaseLayout>

@@ -1,0 +1,81 @@
+<div class="blaze-background" aria-hidden="true">
+  <div class="blaze-glow"></div>
+  <canvas data-blaze class="blaze-canvas"></canvas>
+  <div class="blaze-vignette"></div>
+</div>
+
+<script>
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+  const canvas = hero?.querySelector<HTMLCanvasElement>('[data-blaze]');
+  const toggle = hero?.querySelector<HTMLButtonElement>('[data-motion-toggle]');
+
+  if (hero && canvas && toggle) {
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let userPaused = false;
+    let disposed = false;
+    let loading = false;
+    let instance: { destroy: () => void } | null = null;
+
+    function syncPreference() {
+      const paused = userPaused || motion.matches;
+      hero!.dataset.motion = paused ? 'paused' : 'running';
+      toggle!.setAttribute('aria-pressed', String(paused));
+      toggle!.setAttribute('aria-label', motion.matches ? 'Reduced motion enabled' : paused ? 'Resume background animation' : 'Pause background animation');
+      toggle!.title = toggle!.getAttribute('aria-label')!;
+      toggle!.disabled = motion.matches;
+      hero!.dispatchEvent(new Event('blaze:motionchange'));
+      if (!paused) void loadEffect();
+    }
+
+    async function loadEffect() {
+      if (disposed || loading || instance || motion.matches || userPaused) return;
+      loading = true;
+      try {
+        const { createBlazeBackground } = await import('@/lib/blaze/renderer');
+        if (!disposed && !motion.matches && !userPaused) {
+          instance = createBlazeBackground(canvas!, hero!);
+          if (!instance) toggle!.hidden = true;
+        }
+      } catch {
+        toggle!.hidden = true;
+      } finally {
+        loading = false;
+      }
+    }
+
+    function onToggle() {
+      userPaused = !userPaused;
+      syncPreference();
+    }
+
+    function onUnavailable() {
+      toggle!.hidden = true;
+    }
+
+    toggle.hidden = false;
+    // Paint the HTML hero before loading or compiling the shader.
+    const schedule = () => {
+      if ('requestIdleCallback' in window) window.requestIdleCallback(syncPreference, { timeout: 1500 });
+      else setTimeout(syncPreference, 200);
+    };
+    if (document.readyState === 'complete') schedule();
+    else window.addEventListener('load', schedule, { once: true });
+    toggle.addEventListener('click', onToggle);
+    hero.addEventListener('blaze:unavailable', onUnavailable);
+    motion.addEventListener('change', syncPreference);
+
+    function cleanup() {
+      disposed = true;
+      instance?.destroy();
+      toggle!.removeEventListener('click', onToggle);
+      hero!.removeEventListener('blaze:unavailable', onUnavailable);
+      motion.removeEventListener('change', syncPreference);
+      window.removeEventListener('load', schedule);
+    }
+    window.addEventListener('pagehide', (event) => {
+      // A page in the back/forward cache can resume its existing renderer.
+      if (!event.persisted) cleanup();
+    });
+    document.addEventListener('astro:before-swap', cleanup, { once: true });
+  }
+</script>

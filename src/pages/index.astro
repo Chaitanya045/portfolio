@@ -1,0 +1,33 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import WaveButton from '@/components/WaveButton';
+import BlazeBackground from '@/components/BlazeBackground.astro';
+---
+
+<BaseLayout title="Chaitanya — Portfolio">
+  <div class="hero" data-hero data-motion="running">
+    <BlazeBackground />
+    <div class="mx-auto flex min-h-svh max-w-6xl flex-col px-6 sm:px-10">
+      <header class="flex items-center justify-between border-b border-ink/10 py-7">
+        <a href="/" class="text-sm font-semibold tracking-tight">Chaitanya<span class="text-accent">.</span></a>
+        <span class="text-xs tracking-wide text-ink/55">Portfolio in progress</span>
+      </header>
+      <main id="main" class="flex flex-1 items-center py-20">
+        <div class="max-w-3xl">
+          <p class="mb-7 text-xs font-medium uppercase tracking-[0.2em] text-accent">A new beginning</p>
+          <h1 class="text-5xl leading-[1.08] font-medium tracking-[-0.045em] sm:text-7xl">A space for ideas,<br />projects, and stories.</h1>
+          <p class="mt-7 mb-9 max-w-md text-lg leading-relaxed text-ink/65">I'm building a new home for my work. More soon.</p>
+          <WaveButton client:load />
+        </div>
+      </main>
+      <footer class="flex items-center justify-between border-t border-ink/10 py-6 text-xs text-ink/55">
+        <span>© {new Date().getFullYear()} Chaitanya</span>
+        <button class="motion-toggle" data-motion-toggle type="button" aria-label="Pause background animation" aria-pressed="false" hidden>
+          <svg class="pause-icon" width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><rect x="2" y="2" width="2.5" height="8" rx=".5" /><rect x="7.5" y="2" width="2.5" height="8" rx=".5" /></svg>
+          <svg class="play-icon" width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="m3 1.5 7 4.5-7 4.5z" /></svg>
+          <span>Ambient</span>
+        </button>
+      </footer>
+    </div>
+  </div>
+</BaseLayout>
