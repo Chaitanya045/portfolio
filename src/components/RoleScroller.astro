@@ -1,0 +1,78 @@
+---
+const roles = [
+  'Software Engineer',
+  'Backend Engineer',
+  'Applied AI Engineer',
+  'Developer Tools Engineer',
+  'Test Automation Engineer',
+];
+---
+
+<div class="role-scroller" data-role-scroller>
+  <p class="sr-only">Roles: {roles.join(', ')}.</p>
+  <div class="role-window" aria-hidden="true">
+    <div class="role-track">
+      {[...roles, roles[0]].map((role) => <span class="role-item">{role}</span>)}
+    </div>
+  </div>
+</div>
+
+<script>
+  const scroller = document.querySelector<HTMLElement>('[data-role-scroller]');
+  const syncVisibility = () => scroller?.toggleAttribute('data-hidden', document.hidden);
+  syncVisibility();
+  document.addEventListener('visibilitychange', syncVisibility);
+</script>
+
+<style>
+  .role-scroller {
+    position: absolute;
+    top: calc(100% + clamp(1rem, 2vw, 1.75rem));
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(calc(100vw - 48px), 40rem);
+    color: #cfb3a4;
+    font-family: 'Outfit', 'Segoe UI', sans-serif;
+    font-size: clamp(.8rem, 1.1vw, 1rem);
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+
+  .role-window {
+    height: 2.5em;
+    overflow: hidden;
+    mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+  }
+
+  .role-track {
+    animation: roles-scroll 20s cubic-bezier(.65, 0, .35, 1) infinite;
+  }
+
+  .role-item {
+    display: block;
+    height: 2.5em;
+    line-height: 2.5;
+    white-space: nowrap;
+  }
+
+  /* Five readable holds and a duplicate first row make the loop seamless. */
+  @keyframes roles-scroll {
+    0%, 16% { transform: translateY(0); }
+    20%, 36% { transform: translateY(-16.666667%); }
+    40%, 56% { transform: translateY(-33.333333%); }
+    60%, 76% { transform: translateY(-50%); }
+    80%, 96% { transform: translateY(-66.666667%); }
+    100% { transform: translateY(-83.333333%); }
+  }
+
+  :global(html[data-intro='playing']) .role-track,
+  :global([data-hero][data-motion='paused']) .role-track,
+  .role-scroller[data-hidden] .role-track {
+    animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .role-track { animation: none; }
+  }
+</style>

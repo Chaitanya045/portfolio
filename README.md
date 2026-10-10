@@ -31,6 +31,8 @@ pnpm build       # Production output for Vercel
 
 The hero name uses self-hosted Outfit Bold, a geometric sans with subtle letter spacing. Only the 700-weight Latin WOFF2 file is loaded, preloaded on the home page. Its SIL Open Font License is retained in `licenses/outfit.txt`.
 
+Below the name, `RoleScroller.astro` cycles through resume-backed roles with a feathered vertical scroll every four seconds. It uses CSS animation without React hydration or additional dependencies, pauses during the intro and when the tab is hidden, and respects reduced motion and the keyboard-accessible motion control. Screen readers receive the complete role list as static text.
+
 ## Ambient background
 
 The home page uses a background-only adaptation of [Canvas UI Blaze](https://canvasui.dev/docs/components/blaze). The original license is retained in `licenses/canvas-ui.txt`.

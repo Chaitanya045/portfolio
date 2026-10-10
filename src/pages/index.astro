@@ -2,6 +2,7 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import BlazeBackground from '@/components/BlazeBackground.astro';
 import HeroIntro from '@/components/HeroIntro.astro';
+import RoleScroller from '@/components/RoleScroller.astro';
 ---
 
 <BaseLayout title="Chaitanya — Portfolio" launchIntro>
@@ -10,11 +11,14 @@ import HeroIntro from '@/components/HeroIntro.astro';
     <BlazeBackground />
     <HeroIntro />
     <main id="main" data-intro-content class="flex min-h-svh items-center justify-center px-6 text-center">
-      <h1 class="hero-name">CHAITANYA</h1>
-      <button class="motion-toggle sr-only focus:not-sr-only focus:fixed focus:right-6 focus:bottom-6" data-motion-toggle type="button" aria-label="Pause background animation" aria-pressed="false" hidden>
+      <div class="hero-title">
+        <h1 class="hero-name">CHAITANYA</h1>
+        <RoleScroller />
+      </div>
+      <button class="motion-toggle sr-only focus:not-sr-only focus:fixed focus:right-6 focus:bottom-6" data-motion-toggle type="button" aria-label="Pause animations" aria-pressed="false" hidden>
         <svg class="pause-icon" width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><rect x="2" y="2" width="2.5" height="8" rx=".5" /><rect x="7.5" y="2" width="2.5" height="8" rx=".5" /></svg>
         <svg class="play-icon" width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="m3 1.5 7 4.5-7 4.5z" /></svg>
-        <span>Ambient</span>
+        <span>Motion</span>
       </button>
     </main>
   </div>
@@ -28,6 +32,8 @@ import HeroIntro from '@/components/HeroIntro.astro';
     font-weight: 700;
     font-display: swap;
   }
+
+  .hero-title { position: relative; }
 
   .hero-name {
     color: #ea916b;

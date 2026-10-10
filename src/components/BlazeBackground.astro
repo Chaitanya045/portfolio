@@ -20,7 +20,7 @@
       const paused = userPaused || motion.matches;
       hero!.dataset.motion = paused ? 'paused' : 'running';
       toggle!.setAttribute('aria-pressed', String(paused));
-      toggle!.setAttribute('aria-label', motion.matches ? 'Reduced motion enabled' : paused ? 'Resume background animation' : 'Pause background animation');
+      toggle!.setAttribute('aria-label', motion.matches ? 'Reduced motion enabled' : paused ? 'Resume animations' : 'Pause animations');
       toggle!.title = toggle!.getAttribute('aria-label')!;
       toggle!.disabled = motion.matches;
       hero!.dispatchEvent(new Event('blaze:motionchange'));
