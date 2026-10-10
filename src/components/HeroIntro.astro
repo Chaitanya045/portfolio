@@ -53,8 +53,9 @@
     0% { opacity: 0; transform: translateY(-50%) rotate(-90deg) scaleX(var(--intro-line-scale, .06)); }
     15%, 26% { opacity: 1; transform: translateY(-50%) rotate(-90deg) scaleX(var(--intro-line-scale, .06)); }
     46% { opacity: 1; transform: translateY(-50%) rotate(0deg) scaleX(var(--intro-line-scale, .06)); }
-    68%, 76% { opacity: 1; transform: translateY(-50%) rotate(0deg) scaleX(1); }
-    100% { opacity: 0; transform: translateY(-50%) rotate(0deg) scaleX(1); }
+    62% { opacity: 1; transform: translateY(-50%) rotate(0deg) scaleX(1); }
+    /* Finish fading before the shutters open so no line sits over the background. */
+    68%, 100% { opacity: 0; transform: translateY(-50%) rotate(0deg) scaleX(1); }
   }
 
   @keyframes ignition-open-top {
