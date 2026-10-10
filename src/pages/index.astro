@@ -3,6 +3,10 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import BlazeBackground from '@/components/BlazeBackground.astro';
 import HeroIntro from '@/components/HeroIntro.astro';
 import RoleScroller from '@/components/RoleScroller.astro';
+import { spring } from 'motion';
+
+// Bake the spring into CSS so Motion adds no browser runtime for this effect.
+const nameSpring = String(spring(.45));
 ---
 
 <BaseLayout title="Chaitanya — Portfolio" launchIntro>
@@ -12,7 +16,9 @@ import RoleScroller from '@/components/RoleScroller.astro';
     <HeroIntro />
     <main id="main" data-intro-content class="flex min-h-svh items-center justify-center px-6 text-center">
       <div class="hero-title">
-        <h1 class="hero-name">CHAITANYA</h1>
+        <h1 class="hero-name" data-interactive-name style={`--name-spring: ${nameSpring}`}>
+          <span class="hero-name-ink" data-name-ink>CHAITANYA<span class="hero-name-highlight" aria-hidden="true">CHAITANYA</span></span>
+        </h1>
         <RoleScroller />
       </div>
       <button class="motion-toggle sr-only focus:not-sr-only focus:fixed focus:right-6 focus:bottom-6" data-motion-toggle type="button" aria-label="Pause animations" aria-pressed="false" hidden>
@@ -23,6 +29,76 @@ import RoleScroller from '@/components/RoleScroller.astro';
     </main>
   </div>
 </BaseLayout>
+
+<script>
+  const name = document.querySelector<HTMLElement>('[data-interactive-name]');
+  const ink = name?.querySelector<HTMLElement>('[data-name-ink]');
+  const hero = name?.closest<HTMLElement>('[data-hero]');
+
+  if (name && ink && hero) {
+    const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    let frame = 0;
+    let pointerX = 0;
+    let pointerY = 0;
+    const enabled = () => finePointer.matches && !reducedMotion.matches &&
+      !document.hidden && !document.documentElement.hasAttribute('data-intro') &&
+      hero.dataset.motion !== 'paused';
+
+    function reset() {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      delete name!.dataset.interacting;
+      ink!.style.setProperty('--name-x', '0px');
+      ink!.style.setProperty('--name-y', '0px');
+    }
+
+    function paint() {
+      frame = 0;
+      if (!enabled()) return reset();
+      const box = name!.getBoundingClientRect();
+      const x = Math.max(0, Math.min(box.width, pointerX - box.left));
+      const y = Math.max(0, Math.min(box.height, pointerY - box.top));
+      name!.dataset.interacting = 'true';
+      ink!.style.setProperty('--name-x', `${(x / box.width - .5) * 10}px`);
+      ink!.style.setProperty('--name-y', `${(y / box.height - .5) * 6}px`);
+      ink!.style.setProperty('--light-x', `${x}px`);
+      ink!.style.setProperty('--light-y', `${y}px`);
+    }
+
+    function move(event: PointerEvent) {
+      if (event.pointerType === 'touch' || event.buttons || !enabled()) return reset();
+      pointerX = event.clientX;
+      pointerY = event.clientY;
+      if (!frame) frame = requestAnimationFrame(paint);
+    }
+
+    name.addEventListener('pointerenter', move);
+    name.addEventListener('pointermove', move);
+    name.addEventListener('pointerleave', reset);
+    name.addEventListener('pointercancel', reset);
+    name.addEventListener('pointerdown', reset);
+    finePointer.addEventListener('change', reset);
+    reducedMotion.addEventListener('change', reset);
+    document.addEventListener('visibilitychange', reset);
+    hero.addEventListener('blaze:motionchange', reset);
+
+    function cleanup() {
+      reset();
+      name!.removeEventListener('pointerenter', move);
+      name!.removeEventListener('pointermove', move);
+      name!.removeEventListener('pointerleave', reset);
+      name!.removeEventListener('pointercancel', reset);
+      name!.removeEventListener('pointerdown', reset);
+      finePointer.removeEventListener('change', reset);
+      reducedMotion.removeEventListener('change', reset);
+      document.removeEventListener('visibilitychange', reset);
+      hero!.removeEventListener('blaze:motionchange', reset);
+    }
+    window.addEventListener('pagehide', (event) => { if (!event.persisted) cleanup(); });
+    document.addEventListener('astro:before-swap', cleanup, { once: true });
+  }
+</script>
 
 <style>
   @font-face {
@@ -42,5 +118,41 @@ import RoleScroller from '@/components/RoleScroller.astro';
     font-weight: 700;
     line-height: 1.1;
     letter-spacing: .04em;
+  }
+
+  .hero-name-ink {
+    display: inline-block;
+    position: relative;
+    transform: translate3d(var(--name-x, 0px), var(--name-y, 0px), 0);
+    transition: transform .6s cubic-bezier(.22, 1, .36, 1);
+  }
+
+  @supports (transition-timing-function: linear(0, 1)) {
+    .hero-name-ink { transition: transform var(--name-spring); }
+  }
+
+  .hero-name-highlight {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    user-select: none;
+    color: transparent;
+    background: radial-gradient(ellipse 140px 100px at var(--light-x, 50%) var(--light-y, 50%), #ffe1bb, #ffc29380 45%, transparent 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    opacity: 0;
+    transition: opacity .3s ease;
+  }
+
+  .hero-name[data-interacting] .hero-name-highlight { opacity: 1; }
+
+  :global([data-hero][data-motion='paused']) .hero-name-ink,
+  :global([data-hero][data-motion='paused']) .hero-name-highlight {
+    transition: none;
+  }
+
+  @media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
+    .hero-name-ink { transform: none; transition: none; }
+    .hero-name-highlight { display: none; }
   }
 </style>

@@ -21,6 +21,36 @@ const roles = [
   const syncVisibility = () => scroller?.toggleAttribute('data-hidden', document.hidden);
   syncVisibility();
   document.addEventListener('visibilitychange', syncVisibility);
+
+  if (scroller) {
+    const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    const hero = scroller.closest<HTMLElement>('[data-hero]');
+    let readingTimer: number | undefined;
+    const stopReading = () => {
+      clearTimeout(readingTimer);
+      scroller.removeAttribute('data-reading');
+    };
+    scroller.addEventListener('pointerenter', (event) => {
+      if (event.pointerType === 'touch' || !finePointer.matches || reducedMotion.matches) return;
+      if (hero?.dataset.motion === 'paused' || document.documentElement.hasAttribute('data-intro')) return;
+      const animation = scroller.querySelector('.role-track')?.getAnimations()[0];
+      // Let an active slide finish naturally before holding a complete role.
+      let delay = 0;
+      if (animation && typeof animation.currentTime === 'number') {
+        const phase = animation.currentTime % 4000;
+        if (phase >= 3200) delay = 4000 - phase + 20;
+      }
+      clearTimeout(readingTimer);
+      readingTimer = window.setTimeout(() => scroller.setAttribute('data-reading', ''), delay);
+    });
+    scroller.addEventListener('pointerleave', stopReading);
+    scroller.addEventListener('pointercancel', stopReading);
+    document.addEventListener('visibilitychange', stopReading);
+    finePointer.addEventListener('change', stopReading);
+    reducedMotion.addEventListener('change', stopReading);
+    hero?.addEventListener('blaze:motionchange', stopReading);
+  }
 </script>
 
 <style>
@@ -36,6 +66,7 @@ const roles = [
     font-weight: 700;
     letter-spacing: .12em;
     text-transform: uppercase;
+    transition: color .25s ease;
   }
 
   .role-window {
@@ -70,7 +101,11 @@ const roles = [
     animation-play-state: paused;
   }
 
+  .role-scroller[data-reading] { color: #f0c5ad; }
+  .role-scroller[data-reading] .role-track { animation-play-state: paused; }
+
   @media (prefers-reduced-motion: reduce) {
     .role-track { animation: none; }
+    .role-scroller { transition: none; }
   }
 </style>

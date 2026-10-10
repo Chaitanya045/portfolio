@@ -33,6 +33,10 @@ The hero name uses self-hosted Outfit Bold, a geometric sans with subtle letter 
 
 Below the name, `RoleScroller.astro` cycles through resume-backed roles with a feathered vertical scroll every four seconds. It uses CSS animation without React hydration or additional dependencies, pauses during the intro and when the tab is hidden, and respects reduced motion and the keyboard-accessible motion control. Screen readers receive the complete role list as static text.
 
+On a fine pointer, the name has a small magnetic drift and a warm highlight that follows the pointer. Motion generates the spring CSS at build time; no animation library is shipped for this interaction. Pointer updates run at most once per animation frame and stop on leave. Hovering over the role line holds a complete role for reading. Pointer effects are disabled for touch, reduced motion, and the motion pause control.
+
+Interaction references: [Motion CSS springs](https://motion.dev/docs/spring) and [Aceternity Text Hover Effect](https://ui.aceternity.com/components/text-hover-effect). [GSAP quickTo](https://gsap.com/docs/v3/GSAP/gsap.quickTo%28%29/) and [Anime.js scopes](https://animejs.com/documentation/scope/) were also reviewed; the existing Motion dependency can generate the spring during the build for this small effect.
+
 ## Ambient background
 
 The home page uses a background-only adaptation of [Canvas UI Blaze](https://canvasui.dev/docs/components/blaze). The original license is retained in `licenses/canvas-ui.txt`.
