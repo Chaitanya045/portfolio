@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import { experience, jobId, profile } from '@/data/resume';
+import { hasPublishedPosts } from '@/lib/blog';
 
 const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
 interface Destination { label: string; hint: string; href: string; external?: boolean }
@@ -9,7 +10,8 @@ const destinations: Destination[] = [
   ...work.map(({ id, data }) => ({ label: data.title, hint: 'Project', href: `#${id}` })),
   ...experience.map((job) => ({ label: job.company, hint: 'Experience', href: `#${jobId(job.company)}` })),
   { label: 'Email Chaitanya', hint: 'Contact', href: `mailto:${profile.email}` },
-  { label: 'Read the blog', hint: 'Writing', href: '/blog/' },
+  { label: 'Open résumé', hint: 'PDF', href: profile.resume, external: true },
+  ...(await hasPublishedPosts() ? [{ label: 'Read the blog', hint: 'Writing', href: '/blog/' }] : []),
   { label: 'GitHub', hint: 'Profile', href: profile.github, external: true },
   { label: 'LinkedIn', hint: 'Profile', href: profile.linkedin, external: true },
 ];
@@ -28,7 +30,7 @@ const destinations: Destination[] = [
         {item.label}<span>{item.hint}{item.external && ' ↗'}</span>
       </a>
     ))}
-    <p class="command-empty" hidden data-command-empty>No matches. Try “Rendro” or “blog”.</p>
+    <p class="command-empty" hidden data-command-empty>No matches. Try “Rendro” or “email”.</p>
   </nav>
   <p class="command-foot">↑ ↓ to move · Enter to go · Esc to close</p>
 </dialog>

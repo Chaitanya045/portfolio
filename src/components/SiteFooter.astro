@@ -1,14 +1,18 @@
 ---
 import { profile } from '@/data/resume';
+import { hasPublishedPosts } from '@/lib/blog';
+
+const showBlog = await hasPublishedPosts();
 ---
 
 <footer class="site-footer">
   <div class="wrap"><div class="footer-inner">
     <p>© {new Date().getFullYear()} {profile.name}</p>
     <nav aria-label="Elsewhere">
-      <a href={profile.github} target="_blank" rel="noopener noreferrer">GitHub ↗<span class="sr-only"> (opens in a new tab)</span></a>
-      <a href={profile.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn ↗<span class="sr-only"> (opens in a new tab)</span></a>
-      <a href="/blog/">Blog</a>
+      <a class="tap" href={profile.resume} target="_blank" rel="noopener">Résumé ↗<span class="sr-only"> (PDF, opens in a new tab)</span></a>
+      <a class="tap" href={profile.github} target="_blank" rel="noopener noreferrer">GitHub ↗<span class="sr-only"> (opens in a new tab)</span></a>
+      <a class="tap" href={profile.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn ↗<span class="sr-only"> (opens in a new tab)</span></a>
+      {showBlog && <a class="tap" href="/blog/">Blog</a>}
     </nav>
   </div></div>
 </footer>

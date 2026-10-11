@@ -1,5 +1,5 @@
 ---
-// A static left-to-right pipeline diagram for case studies.
+// A static top-to-bottom pipeline diagram for case studies; it reads the same at every width.
 interface Props {
   steps: string[];
 }
@@ -15,9 +15,9 @@ const { steps } = Astro.props;
 
 <style>
   .flow {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .5rem;
+    display: grid;
+    justify-items: start;
+    gap: 1.25rem;
     margin: 2rem 0;
     padding: 0;
     list-style: none;
@@ -29,16 +29,23 @@ const { steps } = Astro.props;
     position: relative;
     display: flex;
     align-items: center;
-    gap: .6rem;
+    gap: .75rem;
+    max-width: 100%;
     padding: .7rem .9rem;
     border: 1px solid var(--line);
+    border-radius: 6px;
     background: var(--surface);
   }
 
+  /* A short connector joins each step to the next. */
   .flow-step:not(:last-child)::after {
-    content: '→';
-    margin-left: .5rem;
-    color: var(--accent);
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 1.45rem;
+    width: 1px;
+    height: 1.25rem;
+    background: linear-gradient(var(--accent), color-mix(in srgb, var(--accent) 25%, transparent));
   }
 
   .flow-index { color: var(--muted); }

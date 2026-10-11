@@ -1,21 +1,25 @@
 ---
 title: Zace
 kind: CLI coding agent
-summary: A learning project, not a usable tool. I built this model-agnostic CLI coding agent to understand how coding agents work, from planner–executor runs to validated tool calls.
+summary: A model-agnostic CLI coding agent I built to learn how coding agents work, from planner–executor runs to validated tool calls.
 period: Feb 2026 – Mar 2026
 order: 2
 badge: Proof of concept
-role: Builder
+role: Solo project
 stack: [Bun, TypeScript, Python, Zod, JSON-RPC, LSP, uv]
 url: https://github.com/Chaitanya045/Zace
 linkLabel: GitHub
+highlights:
+  - { value: '3', label: 'Typed tools carry every side effect' }
+  - { value: '80%', label: 'Context usage that triggers automatic compaction' }
+  - { value: 'LSP', label: 'Diagnostics fed back after every file change' }
 ---
 
 import Flow from '../../components/work/Flow.astro';
 
 ## Overview
 
-Zace is a proof of concept, not a tool meant for real use. I built it to learn how coding agents work under the hood: planning, tool calling, context management and safety checks.
+I built Zace to learn how coding agents work under the hood: planning, tool calling, context management and safety checks. It's a proof of concept for learning, not a tool meant for everyday use.
 
 It's a command-line agent built with Bun and TypeScript. It works with any model, and splits each task into planning and execution so that runs are deterministic.
 

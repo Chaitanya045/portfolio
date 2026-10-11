@@ -7,8 +7,10 @@ export const profile = {
   email: 'schaitanya075@gmail.com',
   github: 'https://github.com/Chaitanya045',
   linkedin: 'https://www.linkedin.com/in/chaitanya-sanapala-390609241/',
+  // A web copy of the résumé without the phone number, generated from the job-search build script.
+  resume: '/Chaitanya_Sanapala_Resume.pdf',
   statement: 'Software engineer working across backend development, SaaS quality engineering and AI systems.',
-  summary: 'I’ve built GCP workflows with Cloud Tasks and Vertex AI/Gemini, an OpenCV-based PDF extraction pipeline, and a TypeScript/Playwright automation framework. I use application and database knowledge to find failure scenarios early. Outside work I build LLM coding agents, documentation hosting and API marketplace backends.',
+  summary: 'I build reliable backend workflows and the tests that keep them honest: GCP pipelines with Cloud Tasks and Vertex AI/Gemini, an OpenCV-based PDF extraction pipeline, and a TypeScript/Playwright automation framework. Knowing the application and its data model well helps me catch failure scenarios before they ship. Outside work I build coding agents, documentation hosting and API marketplace backends.',
 };
 
 export interface Job {

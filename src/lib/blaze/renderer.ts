@@ -10,8 +10,17 @@ export function createBlazeBackground(canvas: HTMLCanvasElement, hero: HTMLEleme
     premultipliedAlpha: true,
     powerPreference: 'low-power',
     preserveDrawingBuffer: false,
+    // Without GPU acceleration the shader would run on the CPU; keep the CSS glow instead.
+    failIfMajorPerformanceCaveat: true,
   });
   if (!gl) return null;
+  // Chrome doesn't flag every software rasteriser as a caveat, so check the renderer name too.
+  const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+  const rendererName = String(gl.getParameter(debugInfo ? debugInfo.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
+  if (/swiftshader|llvmpipe|softpipe|software|basic render driver/i.test(rendererName)) {
+    gl.getExtension('WEBGL_lose_context')?.loseContext();
+    return null;
+  }
 
   const shaders: WebGLShader[] = [];
   let program: WebGLProgram | null = null;
@@ -79,11 +88,16 @@ export function createBlazeBackground(canvas: HTMLCanvasElement, hero: HTMLEleme
   let interval = 1000 / 30;
   let baseInterval = interval;
   let resizePending = true;
+  // Adaptive quality: slow devices step down the framebuffer size, then settle on a still frame.
+  let quality = 1;
+  let lateFrames = 0;
+  let drawn = 0;
+  let settled = false;
   const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
   const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
   // Smoothed pointer state in canvas UV space (origin bottom-left).
   const pointer = { x: 0.5, y: 0.5, targetX: 0.5, targetY: 0.5, vx: 0, vy: 0, strength: 0, target: 0, lastMove: 0 };
-  const canAnimate = () => !destroyed && !document.hidden && inView && !motionQuery.matches && hero.dataset.motion !== 'paused';
+  const canAnimate = () => !destroyed && !settled && !document.hidden && inView && !motionQuery.matches && hero.dataset.motion !== 'paused';
 
   function resize() {
     const { width, height } = canvas.getBoundingClientRect();
@@ -91,14 +105,14 @@ export function createBlazeBackground(canvas: HTMLCanvasElement, hero: HTMLEleme
     const small = width < 768;
     // This soft background doesn't need a Retina-sized framebuffer.
     const maxDimension = Math.min(1024, gl!.getParameter(gl!.MAX_RENDERBUFFER_SIZE));
-    const ratio = Math.min(small ? 0.8 : 0.65, maxDimension / Math.max(width, height), Math.sqrt(420_000 / (width * height)));
+    const ratio = quality * Math.min(small ? 0.8 : 0.65, maxDimension / Math.max(width, height), Math.sqrt(420_000 / (width * height)));
     canvas.width = Math.max(1, Math.round(width * ratio));
     canvas.height = Math.max(1, Math.round(height * ratio));
     baseInterval = 1000 / (small ? 24 : 30);
     interval = baseInterval;
     gl!.viewport(0, 0, canvas.width, canvas.height);
     gl!.uniform2f(resolution, width, height);
-    gl!.uniform1i(layersUniform, small ? 2 : 3);
+    gl!.uniform1i(layersUniform, small || quality < 1 ? 2 : 3);
     resizePending = false;
   }
 
@@ -108,6 +122,8 @@ export function createBlazeBackground(canvas: HTMLCanvasElement, hero: HTMLEleme
     const delta = now - lastDraw;
     if (resizePending || delta >= interval) {
       if (resizePending) resize();
+      else adapt(delta);
+      if (settled) return;
       const dt = Math.max(Math.min(delta / 1000, 0.1), 0.001);
       time += dt * 0.55;
       lastDraw = now;
@@ -117,6 +133,21 @@ export function createBlazeBackground(canvas: HTMLCanvasElement, hero: HTMLEleme
       canvas.dataset.ready = 'true';
     }
     frame = requestAnimationFrame(draw);
+  }
+
+  // Frames that keep arriving far later than scheduled mean the device can't keep up.
+  function adapt(delta: number) {
+    if (++drawn < 12) return;
+    lateFrames = delta > Math.max(interval, baseInterval) * 2.2 ? lateFrames + 1 : Math.max(0, lateFrames - 1);
+    if (lateFrames < 8) return;
+    lateFrames = 0;
+    if (quality > 0.4) {
+      quality *= 0.7;
+      resizePending = true;
+    } else {
+      // The last drawn frame stays on screen, so the hero keeps its look without the cost.
+      settled = true;
+    }
   }
 
   // Ease the force field toward the pointer and let it fade out after a pause.

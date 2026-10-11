@@ -20,15 +20,15 @@ interface Props {
 }
 
 const { entry, next } = Astro.props;
-const { title, kind, summary, period, role, stack, url, linkLabel, badge } = entry.data;
+const { title, kind, summary, period, role, stack, url, linkLabel, badge, highlights } = entry.data;
 const { Content } = await render(entry);
 ---
 
-<BaseLayout title={`${title} — Chaitanya Sanapala`} description={summary}>
+<BaseLayout title={`${title} — Chaitanya Sanapala`} description={summary} type="article">
   <SiteHeader />
   <main id="main" class="sheet case">
     <div class="wrap">
-      <a href="/#work" class="kicker case-back">← All work</a>
+      <a href="/#work" class="kicker case-back tap">← All work</a>
 
       <header class="case-head">
         <p class="kicker case-kind">{kind}{badge && <span class="badge">{badge}</span>}</p>
@@ -38,12 +38,20 @@ const { Content } = await render(entry);
 
       <WorkCover entry={entry} sizes="(min-width: 76rem) 1184px, 100vw" eager />
 
+      {highlights && (
+        <dl class="case-stats" aria-label="At a glance">
+          {highlights.map(({ value, label }) => (
+            <div><dt>{label}</dt><dd class="display">{value}</dd></div>
+          ))}
+        </dl>
+      )}
+
       <div class="case-body" data-reveal>
         <dl class="case-facts">
           <div><dt class="kicker">Role</dt><dd>{role}</dd></div>
           <div><dt class="kicker">Period</dt><dd>{period}</dd></div>
           <div><dt class="kicker">Stack</dt><dd>{stack.join(', ')}</dd></div>
-          <div><dt class="kicker">Live</dt><dd><a href={url} target="_blank" rel="noopener noreferrer">{linkLabel} ↗<span class="sr-only"> (opens in a new tab)</span></a></dd></div>
+          <div><dt class="kicker">Live</dt><dd><a class="tap" href={url} target="_blank" rel="noopener noreferrer">{linkLabel} ↗<span class="sr-only"> (opens in a new tab)</span></a></dd></div>
         </dl>
         <article class="prose">
           <Content />
@@ -73,6 +81,30 @@ const { Content } = await render(entry);
 
   .case-head {
     margin: 2.5rem 0 3rem;
+  }
+
+  .case-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    margin: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .case-stats div {
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+    padding: 1.75rem 1.5rem 1.75rem 0;
+  }
+
+  /* The value reads first; the label stays first in the markup so the pairs make sense when read aloud. */
+  .case-stats dd { order: -1; margin: 0; color: var(--accent); font-size: clamp(1.75rem, 3vw, 2.25rem); line-height: 1.1; }
+  .case-stats dt { max-width: 18rem; color: var(--muted); font-size: .875rem; line-height: 1.5; }
+
+  @media (max-width: 40rem) {
+    .case-stats { grid-template-columns: 1fr; }
+    .case-stats div { gap: .25rem; padding: 1rem 0; }
+    .case-stats div + div { border-top: 1px solid var(--line); }
   }
 
   .case-kind { color: var(--accent); }

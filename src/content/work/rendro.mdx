@@ -4,12 +4,16 @@ kind: Documentation hosting platform
 summary: Push HTML docs from a CLI and read them live, with a lazy VS Code-style sidebar, inline comments and org isolation.
 period: Jul 2026 – Present
 order: 1
-role: Builder
+role: Solo project
 stack: [Hono, Convex, Cloudflare Workers, Cloudflare R2]
 url: https://rendro.app/
 linkLabel: rendro.app
 cover: ../../assets/work/rendro.png
 coverAlt: The Rendro landing page in dark mode, showing a documentation workspace with a sidebar tree.
+highlights:
+  - { value: 'Diffed', label: 'Only files whose hashes changed are uploaded on each push' }
+  - { value: 'Atomic', label: 'A deployment goes live only once it has been verified' }
+  - { value: 'Sandboxed', label: 'Published HTML renders in an isolated iframe, exactly as authored' }
 ---
 
 import Flow from '../../components/work/Flow.astro';

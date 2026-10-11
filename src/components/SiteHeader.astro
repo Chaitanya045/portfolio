@@ -1,5 +1,6 @@
 ---
 import Logo from '@/components/Logo.astro';
+import { hasPublishedPosts } from '@/lib/blog';
 
 interface Props {
   /** On the home page the header starts open and borderless over the hero. */
@@ -16,7 +17,7 @@ const left = [
 ];
 const right = [
   { href: `${base}#contact`, label: 'Contact' },
-  { href: '/blog/', label: 'Blog', current: inBlog },
+  ...(await hasPublishedPosts() ? [{ href: '/blog/', label: 'Blog', current: inBlog }] : []),
 ];
 const all = [...left, ...right];
 ---

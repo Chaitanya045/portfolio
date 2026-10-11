@@ -2,7 +2,6 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import BlazeBackground from '@/components/BlazeBackground.astro';
 import HeroIntro from '@/components/HeroIntro.astro';
-import RoleScroller from '@/components/RoleScroller.astro';
 import SiteHeader from '@/components/SiteHeader.astro';
 import SiteFooter from '@/components/SiteFooter.astro';
 import Intro from '@/components/home/Intro.astro';
@@ -15,10 +14,22 @@ import { spring } from 'motion';
 
 // Bake the spring into CSS so Motion adds no browser runtime for this effect.
 const nameSpring = String(spring(.45));
+
+// Structured data helps search engines show the name, role and profiles together.
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  jobTitle: profile.title,
+  url: Astro.site?.href,
+  email: `mailto:${profile.email}`,
+  address: { '@type': 'PostalAddress', addressLocality: 'Bangalore', addressCountry: 'IN' },
+  sameAs: [profile.github, profile.linkedin],
+};
 ---
 
 <BaseLayout title="Chaitanya Sanapala — Software Engineer" description="Software engineer in Bangalore working across backend development, SaaS quality engineering and AI systems." launchIntro>
-  <link slot="head" rel="preload" href="/fonts/outfit-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(person)} />
   <SiteHeader overHero />
   <main id="main">
   <div id="top" class="hero" data-hero data-motion="running">
@@ -30,7 +41,7 @@ const nameSpring = String(spring(.45));
           <span class="hero-name-ink" data-name-ink>CHAITANYA<span class="hero-name-highlight" aria-hidden="true">CHAITANYA</span></span>
         </h1>
         <div class="hero-sub">
-          <RoleScroller />
+          <p class="hero-role">{profile.title}</p>
           <ul class="hero-socials" aria-label="Elsewhere">
             <li>
               <a class="hero-social" href={profile.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub (opens in a new tab)">
@@ -136,13 +147,23 @@ const nameSpring = String(spring(.45));
 <style>
   .hero-title { position: relative; }
 
-  /* Roles and social links hang below the name without shifting it off centre. */
+  /* The role and social links hang below the name without shifting it off centre. */
   .hero-sub {
     position: absolute;
     top: calc(100% + clamp(1rem, 2vw, 1.75rem));
     left: 50%;
     transform: translateX(-50%);
     width: min(calc(100vw - 48px), 40rem);
+  }
+
+  .hero-role {
+    color: #a9b6cf;
+    font-family: 'Outfit', 'Segoe UI', sans-serif;
+    font-size: clamp(.8rem, 1.1vw, 1rem);
+    font-weight: 700;
+    line-height: 2.5;
+    letter-spacing: .12em;
+    text-transform: uppercase;
   }
 
   .hero-socials {

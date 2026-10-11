@@ -1,12 +1,13 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import SiteHeader from '@/components/SiteHeader.astro';
 import SiteFooter from '@/components/SiteFooter.astro';
+import { getPosts } from '@/lib/blog';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog', ({ data }) => import.meta.env.DEV || !data.draft);
+  const posts = await getPosts();
   return posts.map((post) => ({ params: { id: post.id }, props: { post } }));
 }
 
@@ -16,11 +17,11 @@ const { post } = Astro.props;
 const { Content } = await render(post);
 ---
 
-<BaseLayout title={`${post.data.title} — Chaitanya Sanapala`} description={post.data.description}>
+<BaseLayout title={`${post.data.title} — Chaitanya Sanapala`} description={post.data.description} type="article" noindex={post.data.draft}>
   <SiteHeader />
   <main id="main" class="sheet post">
     <div class="wrap post-wrap">
-      <a href="/blog/" class="kicker post-back">← All posts</a>
+      <a href="/blog/" class="kicker post-back tap">← All posts</a>
       {post.data.draft && <p class="kicker post-draft">Draft preview</p>}
       <h1 class="display post-title">{post.data.title}</h1>
       <time datetime={post.data.publishedAt.toISOString()} class="kicker post-date">

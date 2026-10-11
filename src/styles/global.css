@@ -81,9 +81,15 @@
 
 /* Shared layout for the pages below the hero. */
 .sheet { position: relative; z-index: 1; background: var(--bg); color: var(--text); }
+/* Large monitors get proportionally larger type and a wider column instead of a small island. */
+@media (min-width: 1920px) { html { font-size: 106.25%; } }
+@media (min-width: 2400px) { html { font-size: 118.75%; } }
 .wrap { max-width: 76rem; margin: 0 auto; padding: 0 1.5rem; }
+/* Small text links get a full-size touch target without changing the layout. */
+@media (pointer: coarse) {
+  .tap { display: inline-block; padding-block: .75rem; margin-block: -.75rem; }
+}
 .kicker { color: var(--muted); font-size: .8125rem; letter-spacing: .01em; }
-.eyebrow { color: var(--accent); font-size: .75rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; }
 /* Terminal-style section labels, such as "~/projects  03 side projects". */
 .prompt-title {
   display: flex;

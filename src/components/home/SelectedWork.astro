@@ -5,7 +5,6 @@ const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.
 ---
 
 <section id="work" class="projects wrap" aria-labelledby="work-title" data-projects>
-  <span class="index-cursor" aria-hidden="true" data-index-cursor>›</span>
   <h2 id="work-title" class="prompt-title">~/projects <small>{String(work.length).padStart(2, '0')} side projects</small></h2>
   {work.map(({ id, data }) => (
     <article class="project" id={id} data-project>
@@ -25,10 +24,8 @@ const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.
 </section>
 
 <script>
-  // One prompt cursor travels between projects: it follows the reading position while
-  // scrolling and jumps to whichever project is hovered or focused.
+  // Each project title types itself in once, the first time it scrolls into view.
   const section = document.querySelector<HTMLElement>('[data-projects]');
-  const cursor = section?.querySelector<HTMLElement>('[data-index-cursor]');
 
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   if (section && !reducedMotion.matches && 'IntersectionObserver' in window) {
@@ -61,59 +58,13 @@ const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.
     addEventListener('pagehide', finishAll);
     addEventListener('pagereveal', (event) => { if (event.viewTransition) finishAll(); });
   }
-
-  if (section && cursor) {
-    const rows = [...section.querySelectorAll<HTMLElement>('[data-project]')];
-    let frame = 0;
-
-    const select = (row: HTMLElement) => {
-      rows.forEach((item) => item.toggleAttribute('data-active', item === row));
-      const title = row.querySelector<HTMLElement>('.project-title')!;
-      const offset = title.getBoundingClientRect().top - section.getBoundingClientRect().top;
-      cursor.style.transform = `translateY(${offset + title.offsetHeight / 2}px) translateY(-50%)`;
-      cursor.setAttribute('data-ready', '');
-    };
-
-    const follow = () => {
-      frame = 0;
-      const line = innerHeight * .38;
-      const nearest = rows.reduce((best, row) =>
-        Math.abs(row.getBoundingClientRect().top - line) < Math.abs(best.getBoundingClientRect().top - line) ? row : best);
-      select(nearest);
-    };
-
-    const schedule = () => { if (!frame) frame = requestAnimationFrame(follow); };
-    addEventListener('scroll', schedule, { passive: true });
-    addEventListener('resize', schedule);
-    rows.forEach((row) => {
-      row.addEventListener('pointerenter', () => select(row));
-      row.addEventListener('focusin', () => select(row));
-    });
-    document.fonts.ready.then(schedule);
-  }
 </script>
 
 <style>
-  .projects { position: relative; }
-
-  .index-cursor {
-    position: absolute;
-    top: 0;
-    left: 1.5rem;
-    color: var(--accent);
-    font: 700 2.6rem/1 var(--font-display);
-    text-shadow: 0 0 22px #6d9bff80;
-    pointer-events: none;
-    opacity: 0;
-    transition: transform .45s var(--ease-out), opacity .3s ease;
-  }
-
-  .index-cursor[data-ready] { opacity: 1; }
-
   .prompt-title { margin-bottom: .5rem; }
 
   .project {
-    padding: 2rem 0 2.25rem 2.6rem;
+    padding: 2rem 0 2.25rem;
     border-bottom: 1px solid var(--line);
   }
 
@@ -133,8 +84,7 @@ const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.
   }
 
   .project-title a { transition: color .3s ease; }
-  .project[data-active] .project-title a,
-  .project-title a:focus-visible { color: var(--accent); }
+  .project:focus-within .project-title a { color: var(--accent); }
 
   .project-character { position: relative; }
   /* Keep the caret in the inline tree so typing never changes kerning. */
@@ -172,7 +122,12 @@ const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.
     transition: transform .4s var(--ease-out);
   }
 
-  .project[data-active] .project-arrow { transform: translateX(.2em); }
+  .project:focus-within .project-arrow { transform: translateX(.2em); }
+
+  @media (hover: hover) {
+    .project:hover .project-title a { color: var(--accent); }
+    .project:hover .project-arrow { transform: translateX(.2em); }
+  }
 
   .project-when {
     flex: none;
@@ -200,14 +155,12 @@ const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.
   .project-stack span { color: #52617d; }
 
   @media (max-width: 44rem) {
-    .index-cursor { font-size: 1.8rem; }
-    .project { padding-left: 1.6rem; }
     .project-head { display: block; }
     .project-when { margin: 0 0 1rem; text-align: left; }
-    .project-when span { display: inline; margin-left: .6rem; }
+    .project-when span { display: inline-block; margin-left: .6rem; white-space: nowrap; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .index-cursor, .project-title a, .project-arrow { transition: none; }
+    .project-title a, .project-arrow { transition: none; }
   }
 </style>

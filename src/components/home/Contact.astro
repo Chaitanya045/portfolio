@@ -4,7 +4,7 @@ import { profile } from '@/data/resume';
 
 <section id="contact" class="wrap" aria-labelledby="contact-title"><div class="contact">
   <p class="prompt-title">~/contact <small>{profile.location}</small></p>
-  <h2 id="contact-title" class="display contact-title" data-reveal>Say hello<span class="caret" aria-hidden="true">_</span></h2>
+  <h2 id="contact-title" class="display contact-title" data-reveal>Say hello</h2>
   <div class="contact-row" data-reveal>
     <a class="contact-email" href={`mailto:${profile.email}`}>{profile.email} <span aria-hidden="true">↗</span></a>
     <button type="button" class="copy-button" data-copy={profile.email} aria-label="Copy email address">
@@ -12,6 +12,7 @@ import { profile } from '@/data/resume';
       <svg class="check-icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="m3 8.5 3 3 7-7" /></svg>
       <span data-copy-label>Copy</span>
     </button>
+    <a class="contact-resume" href={profile.resume} target="_blank" rel="noopener">Résumé (PDF) <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a>
     <span class="sr-only" aria-live="polite" data-copy-status></span>
   </div>
 </div></section>
@@ -29,15 +30,6 @@ import { profile } from '@/data/resume';
     font-size: clamp(3.25rem, 8vw, 5.6rem);
     line-height: 1;
   }
-
-  /* A terminal caret blinks after the invitation. */
-  .caret { color: var(--accent); }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .caret { animation: blink 1.1s steps(1) infinite; }
-  }
-
-  @keyframes blink { 50% { opacity: 0; } }
 
   .contact-row {
     display: flex;
@@ -72,7 +64,21 @@ import { profile } from '@/data/resume';
     transition: color .2s ease, border-color .2s ease, background-color .2s ease, transform .15s ease;
   }
 
-  .copy-button:hover { color: var(--text); border-color: var(--muted); }
+  .contact-resume {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .4rem .8rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    font-size: .8125rem;
+    transition: color .2s ease, border-color .2s ease;
+  }
+
+  .copy-button:hover,
+  .contact-resume:hover,
+  .contact-resume:focus-visible { color: var(--text); border-color: var(--muted); }
   .copy-button:active { transform: scale(.96); }
   .copy-button[data-copied] { color: #070b16; border-color: var(--accent); background: var(--accent); }
 
@@ -91,7 +97,7 @@ import { profile } from '@/data/resume';
   @keyframes check-draw { from { stroke-dashoffset: 16; } }
 
   @media (prefers-reduced-motion: reduce) {
-    .contact-email, .copy-button { transition: none; }
+    .contact-email, .copy-button, .contact-resume { transition: none; }
     .copy-button[data-copied] .check-icon { animation: none; }
   }
 </style>

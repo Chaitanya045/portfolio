@@ -1,16 +1,14 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import SiteHeader from '@/components/SiteHeader.astro';
 import SiteFooter from '@/components/SiteFooter.astro';
+import { getPosts } from '@/lib/blog';
 
-// Drafts appear while developing and stay out of production builds.
-const posts = (await getCollection('blog', ({ data }) => import.meta.env.DEV || !data.draft))
-  .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+const posts = await getPosts();
 const format = (date: Date) => date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 ---
 
-<BaseLayout title="Blog — Chaitanya Sanapala" description="Writing by Chaitanya Sanapala on backend systems, AI pipelines and testing.">
+<BaseLayout title="Blog — Chaitanya Sanapala" description="Writing by Chaitanya Sanapala on backend systems, AI pipelines and testing." noindex={!posts.length}>
   <SiteHeader />
   <main id="main" class="sheet blog">
     <div class="wrap">

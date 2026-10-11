@@ -91,10 +91,11 @@
     100% { opacity: 0; transform: translateY(101%); }
   }
 
+  /* The content starts at a near-zero opacity rather than hidden: the shutters cover it either
+     way, and browsers only count an element as the Largest Contentful Paint if it paints visibly. */
   @keyframes ignition-content {
-    0%, 72% { opacity: 0; visibility: hidden; transform: translateY(8px); }
-    73% { opacity: 0; visibility: visible; transform: translateY(8px); }
-    100% { opacity: 1; visibility: visible; transform: translateY(0); }
+    0%, 73% { opacity: .01; transform: translateY(8px); }
+    100% { opacity: 1; transform: translateY(0); }
   }
 
   @media (prefers-reduced-motion: reduce) {
