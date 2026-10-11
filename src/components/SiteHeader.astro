@@ -29,8 +29,8 @@ const all = [...left, ...right];
     <span class="nav-dot" aria-hidden="true" data-nav-dot></span>
 
     <ul class="nav-links nav-left">
-      {left.map((link) => (
-        <li>
+      {left.map((link, index) => (
+        <li style={`--reveal-order: ${left.length - 1 - index}`}>
           <a href={link.href} class="nav-link" data-nav-link>{link.label}</a>
         </li>
       ))}
@@ -41,8 +41,8 @@ const all = [...left, ...right];
     </a>
 
     <ul class="nav-links nav-right">
-      {right.map((link) => (
-        <li>
+      {right.map((link, index) => (
+        <li style={`--reveal-order: ${index}`}>
           <a href={link.href} class="nav-link" data-nav-link aria-current={link.current ? 'page' : undefined}>{link.label}</a>
         </li>
       ))}
@@ -493,6 +493,30 @@ const all = [...left, ...right];
 
   @media (min-width: 44.01rem) {
     .mobile-menu { display: none; }
+  }
+
+  /* On the home page intro, the links wait for the logo to finish drawing (about 1.35s after the
+     intro ends), then drift in from their own side, nearest the logo first. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html[data-intro]) .nav-links li,
+    :global(html[data-intro]) .menu-button { opacity: 0; }
+
+    :global(html[data-intro-done]) .nav-left li,
+    :global(html[data-intro-done]) .menu-button { animation: nav-in-left .7s var(--ease-out) both; }
+    :global(html[data-intro-done]) .nav-right li { animation: nav-in-right .7s var(--ease-out) both; }
+
+    :global(html[data-intro-done]) .nav-links li { animation-delay: calc(1.3s + var(--reveal-order, 0) * 90ms); }
+    :global(html[data-intro-done]) .menu-button { animation-delay: 1.3s; }
+  }
+
+  @keyframes nav-in-left {
+    from { opacity: 0; transform: translateX(-14px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  @keyframes nav-in-right {
+    from { opacity: 0; transform: translateX(14px); }
+    to { opacity: 1; transform: none; }
   }
 
   @media (prefers-reduced-motion: reduce) {

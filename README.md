@@ -24,7 +24,7 @@ pnpm build       # Production output for Vercel
 - `src/data/resume.ts`: profile and experience content, taken from the résumé. `public/Chaitanya_Sanapala_Resume.pdf` is the linked web copy, built from the job-search résumé script without the phone number.
 - `src/content/work/`: one MDX case study per project; screenshots live in `src/assets/work/`.
 - `src/components/SiteHeader.astro`: centred C/S logo (`Logo.astro`), section links, Bangalore clock and social links.
-- `src/scripts/interactions.ts`: shared micro-interactions (scroll reveals, copy-to-clipboard, logo draw after the intro).
+- `src/scripts/interactions.ts`: shared micro-interactions (scroll reveals, copy-to-clipboard, logo draw after the intro). On the home page intro, the header's links wait for the logo to finish drawing, then drift in from their own side, nearest the logo first (`SiteHeader.astro`).
 - `src/layouts/BaseLayout.astro`: shared document metadata and global styles.
 - `src/components/`: reusable Astro components.
 - `src/styles/global.css`: Tailwind import, theme tokens, and base styles.
@@ -47,7 +47,7 @@ Interaction references: [Motion CSS springs](https://motion.dev/docs/spring) and
 
 ## Colour themes
 
-Click the header logo while the home hero is in view to cycle Blue → Green → Rust → Paper → Graphite. Elsewhere it keeps its home/top link. The choice is saved as `theme` in localStorage and restored in the document head before paint. Switches crossfade where View Transitions are available, respect reduced motion, and announce the theme with a quiet label and a polite live region. Paper uses a CSS hero background and keeps syntax-highlighted code blocks dark.
+Click the header logo while the home hero is in view to cycle Blue → Green → Rust → Paper → Graphite. Elsewhere it keeps its home/top link. The choice is saved as `theme` in localStorage and restored in the document head before paint. Switches crossfade where View Transitions are available, respect reduced motion, and announce the theme with a quiet label and a polite live region. Paper is the light theme: the WebGL effect adds light, which looks muddy on white, so Paper keeps only the CSS hero gradient and the effect pauses. Syntax-highlighted code blocks stay dark in every theme.
 
 To add a theme, append its ID, display name, background and colour scheme to `src/lib/themes.ts`, then add a matching `:root[data-theme="…"]` block in `src/styles/global.css`. Define the palette and space-separated, normalized `--spark-rgb` / `--smoke-rgb` values; secondary tokens inherit theme-aware aliases. Run `node scripts/check-theme-contrast.mjs` to verify text, body, muted and accent against both background and surface (minimum 4.5:1). With a dev server on port 4337, `PLAYWRIGHT_MODULE=/path/to/playwright-core/index.mjs node scripts/verify-themes.mjs` runs browser checks using `/usr/bin/chromium` and saves screenshots in `artifacts/themes/`; Playwright is supplied externally rather than added as a dependency.
 
@@ -61,7 +61,7 @@ The home page also has a 1.6-second ignition intro: a vertical glowing blue line
 
 ## Writing
 
-Posts republished from elsewhere, such as Medium, set `canonicalUrl` to the original article: the page's canonical link points there, the post is left out of the sitemap, and it shows an "Originally on Medium" link. Published posts also appear in the home page's `~/writing` section, the ⌘K menu and the RSS feed at `/rss.xml`. Code blocks are highlighted at build time with Shiki's Tokyo Night theme.
+Posts republished from elsewhere, such as Medium, set `canonicalUrl` to the original article: the page's canonical link points there, the post is left out of the sitemap, and it shows an "Originally on Medium" link. Published posts also appear in the ⌘K menu and the RSS feed at `/rss.xml`. Code blocks are highlighted at build time with Shiki's Tokyo Night theme.
 
 Posts live in `src/content/blog/` as MDX. Set `draft: true` to preview a post only in development; drafts are excluded from production routes. To publish, set `draft: false` (or leave it out); use `title`, `description`, `publishedAt`, and optional `tags`. The Blog links in the header, footer and ⌘K menu appear automatically once at least one post is published; until then the empty blog index is marked `noindex` and left out of the sitemap.
 

@@ -75,13 +75,9 @@ const hasFeed = await hasPublishedPosts();
           const root = document.documentElement;
           const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
           if (motion.matches) return;
-          // The intro is a first impression: play it once per visit, and never when a link lands
-          // partway down the page (such as /#contact) or the visitor returns from another page.
-          let played = false;
-          try { played = sessionStorage.getItem('intro-played') === '1'; } catch {}
-          const deepLink = location.hash && location.hash !== '#top';
-          if (played || deepLink) return;
-          try { sessionStorage.setItem('intro-played', '1'); } catch {}
+          // The intro plays on every load of the home page, but not when a link lands partway down
+          // it (such as /#contact): the visitor wants that section, not the hero.
+          if (location.hash && location.hash !== '#top') return;
 
           root.style.setProperty('--intro-line-scale', String(88 / window.innerWidth));
           root.dataset.intro = 'playing';

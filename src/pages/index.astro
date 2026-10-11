@@ -8,7 +8,6 @@ import SiteFooter from '@/components/SiteFooter.astro';
 import Intro from '@/components/home/Intro.astro';
 import SelectedWork from '@/components/home/SelectedWork.astro';
 import Experience from '@/components/home/Experience.astro';
-import Writing from '@/components/home/Writing.astro';
 import Contact from '@/components/home/Contact.astro';
 import CommandMenu from '@/components/home/CommandMenu.astro';
 import { profile } from '@/data/resume';
@@ -69,7 +68,6 @@ const person = {
     <Intro />
     <SelectedWork />
     <Experience />
-    <Writing />
     <Contact />
   </div>
   </main>
@@ -223,11 +221,30 @@ const person = {
     letter-spacing: .04em;
   }
 
+  /* The name is filled with the theme's own shades, and a slow sheen drifts across the letters. */
   .hero-name-ink {
     display: inline-block;
     position: relative;
+    background: linear-gradient(100deg, var(--accent-pale) 0%, var(--hero-name) 30%, var(--accent-strong) 55%, var(--hero-name) 78%, var(--accent-pale) 100%) 0 0 / 220% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
     transform: translate3d(var(--name-x, 0px), var(--name-y, 0px), 0);
     transition: transform .6s cubic-bezier(.22, 1, .36, 1);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-name-ink { animation: name-sheen 14s ease-in-out infinite alternate; }
+    :global([data-hero][data-motion='paused']) .hero-name-ink { animation-play-state: paused; }
+  }
+
+  @keyframes name-sheen {
+    to { background-position: 100% 0; }
+  }
+
+  /* High-contrast modes ignore background images, so fall back to solid system text. */
+  @media (forced-colors: active) {
+    .hero-name-ink { background: none; -webkit-text-fill-color: CanvasText; }
   }
 
   @supports (transition-timing-function: linear(0, 1)) {
