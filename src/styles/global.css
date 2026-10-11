@@ -202,6 +202,57 @@
   @view-transition { navigation: none; }
 }
 
+/* Blog titles and dates glide between the list and the article. Snapshots keep their aspect ratio
+   (anchored top left) so the text grows into place instead of stretching. */
+::view-transition-group(*.post-morph) {
+  animation-duration: .55s;
+  animation-timing-function: cubic-bezier(.22, 1, .36, 1);
+}
+
+::view-transition-old(*.post-morph),
+::view-transition-new(*.post-morph) {
+  width: auto;
+  height: 100%;
+  object-fit: none;
+  object-position: left top;
+}
+
+/* Hand the text over quickly instead of crossfading two sizes of it on top of each other. */
+::view-transition-old(*.post-morph) { animation: page-out .18s ease both; }
+::view-transition-new(*.post-morph) { animation: morph-in .32s ease .14s both; }
+
+@keyframes morph-in { from { opacity: 0; } }
+
+/* Arriving at a post (tagged "reading" on page reveal), the article rises gently behind the title. */
+html:active-view-transition-type(reading)::view-transition-old(root) {
+  animation: page-out .2s ease both;
+}
+
+html:active-view-transition-type(reading)::view-transition-new(root) {
+  animation: page-rise .5s cubic-bezier(.22, 1, .36, 1) .08s both;
+}
+
+/* Opening a post: the logo slides from the centre of the header to the post's top bar while the
+   rest of the header fades out around it (and the reverse on the way back). */
+::view-transition-group(site-logo) {
+  /* Keep the travelling logo above the header that fades in around it. */
+  z-index: 1;
+  animation-duration: .55s;
+  animation-timing-function: cubic-bezier(.22, 1, .36, 1);
+}
+
+/* Both pages draw the same logo, so slide one image instead of crossfading two copies of it,
+   which can flicker as they land. */
+::view-transition-old(site-logo) { display: none; }
+::view-transition-new(site-logo) { animation: none; }
+
+/* The header finishes fading in exactly as the logo lands, so nothing changes after it settles. */
+::view-transition-old(site-header):only-child { animation: page-out .28s ease both; }
+::view-transition-new(site-header):only-child { animation: morph-in .35s ease .2s both; }
+
+@keyframes page-out { to { opacity: 0; } }
+@keyframes page-rise { from { opacity: 0; transform: translateY(14px); } }
+
 @layer base {
   /* Keep jumped-to headings clear of the floating header. */
   html { background: var(--color-paper); color: var(--color-ink); scroll-padding-top: 6rem; }

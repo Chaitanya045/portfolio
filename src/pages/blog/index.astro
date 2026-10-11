@@ -18,8 +18,8 @@ const posts = await getPosts();
           {posts.map((post) => (
             <li>
               <a href={`/blog/${post.id}/`} class="post">
-                <span class="display post-title">{post.data.title}{post.data.draft && <span class="post-draft">draft</span>}</span>
-                <time class="post-date" datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
+                <span class="display post-title" style={`view-transition-name: post-title-${post.id}; view-transition-class: post-morph`}>{post.data.title}{post.data.draft && <span class="post-draft">draft</span>}</span>
+                <time class="post-date" datetime={post.data.publishedAt.toISOString()} style={`view-transition-name: post-date-${post.id}; view-transition-class: post-morph`}>{formatDate(post.data.publishedAt)}</time>
               </a>
             </li>
           ))}
@@ -73,8 +73,12 @@ const posts = await getPosts();
     font-size: clamp(1.25rem, 2.4vw, 1.6rem);
     line-height: 1.25;
     text-wrap: pretty;
-    transition: color .3s ease;
+    transition: color .3s ease, transform .35s var(--ease-out);
   }
+
+  /* Pressing a post acknowledges the click at once: the line completes and the title leans in. */
+  .post:active::after { transform: scaleX(1); transition-duration: .15s; }
+  .post:active .post-title { color: var(--accent); transform: translateX(6px); transition-duration: .15s; }
 
   .post-date {
     flex: none;
@@ -121,5 +125,6 @@ const posts = await getPosts();
 
   @media (prefers-reduced-motion: reduce) {
     .post::after, .post-title, .blog-back { transition: none; }
+    .post:active .post-title { transform: none; }
   }
 </style>

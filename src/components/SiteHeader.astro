@@ -391,6 +391,9 @@ const all = [...left, ...right];
 
   .nav-dot[data-visible] { opacity: 1; transform: translateX(var(--x, 0)) scale(1); }
 
+  /* The logo travels on its own between pages (to the blog post's top bar, for example). */
+  .nav-logo :global(.logo) { view-transition-name: site-logo; }
+
   .nav-logo {
     position: relative;
     z-index: 1;

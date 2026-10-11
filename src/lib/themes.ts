@@ -1,9 +1,10 @@
+// The first theme is the default; the logo cycles through them in this order.
 export const themes = [
+  { id: 'graphite', name: 'Graphite', background: '#0a0a0a', scheme: 'dark' },
   { id: 'blue', name: 'Blue', background: '#070b16', scheme: 'dark' },
   { id: 'green', name: 'Green', background: '#06100c', scheme: 'dark' },
   { id: 'rust', name: 'Rust', background: '#120a08', scheme: 'dark' },
   { id: 'paper', name: 'Paper', background: '#f6f6f4', scheme: 'light' },
-  { id: 'graphite', name: 'Graphite', background: '#0a0a0a', scheme: 'dark' },
 ] as const;
 
 export type Theme = (typeof themes)[number];
