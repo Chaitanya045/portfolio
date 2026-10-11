@@ -24,13 +24,13 @@ const ribbon = 'M315 150H885V280H382L220 512L382 742H693L668 705H520L384 512L525
 >
   <defs>
     <linearGradient id={gradientId} x1="60" y1="150" x2="945" y2="873" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#b9d0ff" />
-      <stop offset=".5" stop-color="#7aa7ff" />
-      <stop offset="1" stop-color="#4f7dff" />
+      <stop offset="0" style="stop-color: var(--accent-pale)" />
+      <stop offset=".5" style="stop-color: var(--hero-name)" />
+      <stop offset="1" style="stop-color: var(--accent-strong)" />
     </linearGradient>
   </defs>
   <path class="logo-fill" d={ribbon} fill={`url(#${gradientId})`} />
-  <path class="logo-outline" d={ribbon} stroke="#b9d0ff" stroke-width="14" stroke-linejoin="round" pathLength="100" />
+  <path class="logo-outline" d={ribbon} style="stroke: var(--accent-pale)" stroke-width="14" stroke-linejoin="round" pathLength="100" />
 </svg>
 
 <style>

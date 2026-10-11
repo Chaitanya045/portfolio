@@ -74,8 +74,8 @@ export function createBlazeBackground(canvas: HTMLCanvasElement, hero: HTMLEleme
   gl.uniform1f(uniform('uSparkSize'), 1.6);
   gl.uniform1f(uniform('uSmoke'), 0.85);
   gl.uniform1f(uniform('uGlow'), 2.4);
-  gl.uniform3f(uniform('uSparkColor'), 0.32, 0.58, 1.0);
-  gl.uniform3f(uniform('uSmokeColor'), 0.07, 0.2, 0.78);
+  const sparkColor = uniform('uSparkColor');
+  const smokeColor = uniform('uSmokeColor');
   const mouseUniform = uniform('uMouse');
   const mouseVelUniform = uniform('uMouseVel');
   const mouseStrengthUniform = uniform('uMouseStrength');
@@ -97,7 +97,7 @@ export function createBlazeBackground(canvas: HTMLCanvasElement, hero: HTMLEleme
   const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
   // Smoothed pointer state in canvas UV space (origin bottom-left).
   const pointer = { x: 0.5, y: 0.5, targetX: 0.5, targetY: 0.5, vx: 0, vy: 0, strength: 0, target: 0, lastMove: 0 };
-  const canAnimate = () => !destroyed && !settled && !document.hidden && inView && !motionQuery.matches && hero.dataset.motion !== 'paused';
+  const canAnimate = () => !destroyed && !settled && !document.hidden && inView && !motionQuery.matches && hero.dataset.motion !== 'paused' && document.documentElement.dataset.theme !== 'paper';
 
   function resize() {
     const { width, height } = canvas.getBoundingClientRect();
@@ -207,6 +207,20 @@ export function createBlazeBackground(canvas: HTMLCanvasElement, hero: HTMLEleme
     }
   }
 
+  function updateTheme() {
+    const style = getComputedStyle(document.documentElement);
+    const rgb = (property: string) => new Float32Array(style.getPropertyValue(property).trim().split(/\s+/).map(Number));
+    gl!.useProgram(program);
+    gl!.uniform3fv(sparkColor, rgb('--spark-rgb'));
+    gl!.uniform3fv(smokeColor, rgb('--smoke-rgb'));
+    // Recolour even a manually paused or adaptively settled frame.
+    if (resizePending) resize();
+    gl!.drawArrays(gl!.TRIANGLE_STRIP, 0, 4);
+    sync();
+  }
+  updateTheme();
+  document.addEventListener('themechange', updateTheme);
+
   const resizeObserver = new ResizeObserver(() => { resizePending = true; sync(); });
   resizeObserver.observe(canvas);
   const intersection = new IntersectionObserver(([entry]) => { inView = entry?.isIntersecting ?? false; sync(); });
@@ -232,6 +246,7 @@ export function createBlazeBackground(canvas: HTMLCanvasElement, hero: HTMLEleme
     resizeObserver.disconnect();
     intersection.disconnect();
     document.removeEventListener('visibilitychange', sync);
+    document.removeEventListener('themechange', updateTheme);
     hero.removeEventListener('blaze:motionchange', sync);
     motionQuery.removeEventListener('change', sync);
     window.removeEventListener('pointermove', onPointerMove);

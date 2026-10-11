@@ -173,19 +173,19 @@ const person = {
     place-items: center;
     width: 2.6rem;
     height: 2.6rem;
-    border: 1px solid #9fb2d626;
+    border: 1px solid color-mix(in srgb, var(--control-border) 14.90196078%, transparent);
     border-radius: 50%;
-    color: #a9b6cf;
-    background: #0c142940;
+    color: var(--hero-secondary);
+    background: color-mix(in srgb, var(--control-bg) 25.09803922%, transparent);
     transition: color .2s ease, border-color .2s ease, background-color .2s ease, transform .35s var(--ease-out), box-shadow .35s ease;
   }
 
   .hero-social:hover,
   .hero-social:focus-visible {
-    color: #e6ecf7;
-    border-color: #7aa7ff;
-    background: #12234a80;
-    box-shadow: 0 0 18px #4f7dff59;
+    color: var(--text);
+    border-color: var(--hero-name);
+    background: color-mix(in srgb, var(--hero-hover) 50.19607843%, transparent);
+    box-shadow: 0 0 18px color-mix(in srgb, var(--accent-strong) 34.90196078%, transparent);
     transform: translateY(-3px);
   }
 
@@ -215,7 +215,7 @@ const person = {
   }
 
   .hero-name {
-    color: #7aa7ff;
+    color: var(--hero-name);
     font-family: 'Outfit', 'Segoe UI', sans-serif;
     font-size: clamp(2.75rem, 7.5vw, 7rem);
     font-weight: 700;
@@ -240,7 +240,7 @@ const person = {
     pointer-events: none;
     user-select: none;
     color: transparent;
-    background: radial-gradient(ellipse 140px 100px at var(--light-x, 50%) var(--light-y, 50%), #dce8ff, #a9c6ff80 45%, transparent 100%);
+    background: radial-gradient(ellipse 140px 100px at var(--light-x, 50%) var(--light-y, 50%), var(--accent-highlight), color-mix(in srgb, var(--accent-soft) 50.19607843%, transparent) 45%, transparent 100%);
     background-clip: text;
     -webkit-background-clip: text;
     opacity: 0;

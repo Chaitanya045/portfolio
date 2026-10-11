@@ -97,14 +97,14 @@ const destinations: Destination[] = [
     /* Tailwind's reset zeroes dialog margins; restore centring near the top. */
     margin: 14vh auto auto;
     padding: 0;
-    border: 1px solid #354970;
+    border: 1px solid var(--command-line);
     border-radius: 14px;
     color: var(--text);
-    background: #0c1324;
-    box-shadow: 0 30px 120px #000a, 0 0 60px -20px #4f7dff55;
+    background: var(--command-bg);
+    box-shadow: 0 30px 120px color-mix(in srgb, var(--shadow) 66.66666667%, transparent), 0 0 60px -20px color-mix(in srgb, var(--accent-strong) 33.33333333%, transparent);
   }
 
-  .command::backdrop { background: #020511bb; backdrop-filter: blur(7px); }
+  .command::backdrop { background: color-mix(in srgb, var(--backdrop) 73.33333333%, transparent); backdrop-filter: blur(7px); }
 
   @media (prefers-reduced-motion: no-preference) {
     .command[open] { animation: command-in .3s var(--ease-out); }
@@ -156,7 +156,7 @@ const destinations: Destination[] = [
   .command-results a[hidden] { display: none; }
 
   .command-results a:hover,
-  .command-results a:focus-visible { color: #a9c6ff; background: #162749; outline: 0; }
+  .command-results a:focus-visible { color: var(--accent-soft); background: var(--command-hover); outline: 0; }
 
   .command-results span { color: var(--muted); font-size: .8125rem; }
 
