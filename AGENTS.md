@@ -16,6 +16,10 @@ destroying the current task tab.
 Use one clearly labeled tab per concurrent agent or task; never navigate or close another agent's tab. Stop before passwords, MFA, CAPTCHA, consent, payments, or ambiguous account selection, identify the exact tab for the user, and yield control. Never expose cookies, tokens, browser history, or storage in chat or tool output.
 Run `~/.obu/bin/obu verify --agent=<agent-id> --browser=<browser> --channel=<channel> --extension-id=<extension-id>` if setup appears stale.
 
+## Project notes
+
+Read `.agents/notes/` before starting work. It records the design rules, settled decisions, motion details and how to verify changes in this environment. Add or update a note when you learn something project-specific that the code doesn't show.
+
 ## Development
 
 When starting the dev server, use background mode:
