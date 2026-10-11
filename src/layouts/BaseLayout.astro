@@ -75,11 +75,25 @@ const hasFeed = await hasPublishedPosts();
         (() => {
           // Decide before the first paint so the hero never flashes behind the intro.
           const root = document.documentElement;
+          // Remember whether the hero was on screen when the page is left, for the reload check below.
+          addEventListener('pagehide', () => {
+            try { sessionStorage.setItem('hero-in-view', String(scrollY < innerHeight / 2)); } catch {}
+          });
           const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
           if (motion.matches) return;
-          // The intro plays on every load of the home page, but not when a link lands partway down
-          // it (such as /#contact): the visitor wants that section, not the hero.
+          // The intro greets visitors arriving from outside the site and replays on a reload from the
+          // hero. It skips links that land partway down the page (such as /#contact), the back and
+          // forward buttons, navigation within the site, and reloads after scrolling past the hero.
           if (location.hash && location.hash !== '#top') return;
+          const navigation = performance.getEntriesByType('navigation')[0];
+          if (navigation?.type === 'back_forward') return;
+          if (navigation?.type === 'reload') {
+            let heroInView;
+            try { heroInView = sessionStorage.getItem('hero-in-view'); } catch {}
+            if (heroInView === 'false') return;
+          } else if (document.referrer) {
+            try { if (new URL(document.referrer).origin === location.origin) return; } catch {}
+          }
 
           root.style.setProperty('--intro-line-scale', String(88 / window.innerWidth));
           root.dataset.intro = 'playing';

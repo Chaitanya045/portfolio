@@ -2,6 +2,7 @@
 
 ## Home intro and header reveal
 
+0. Gating (inline script in `BaseLayout.astro`): it reads `performance.getEntriesByType('navigation')[0].type` and `document.referrer`. A `pagehide` listener saves `sessionStorage['hero-in-view']` (scrollY < half the viewport) so a reload knows where the visitor was. When the intro is skipped, neither `data-intro` nor `data-intro-done` is set, so the logo and nav show immediately.
 1. `BaseLayout.astro` sets `html[data-intro="playing"]` before the first paint. `HeroIntro.astro` then runs the 1.6-second ignition: a vertical line rotates flat, widens and dissolves while the shutters open.
 2. When the intro ends, `src/scripts/interactions.ts` sets `data-intro-done`. The logo traces its outline (about 1.1 s) and fills in (done by about 1.35 s).
 3. The nav links slide in from their own side, nearest the logo first: `--reveal-order`, `calc(1.3s + order × 90ms)`.

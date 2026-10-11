@@ -5,7 +5,7 @@ Each item is a choice the owner made or confirmed. Don't reverse one without ask
 ## Settled
 
 - The hero shows the first name only. The owner chose this deliberately; leave it alone.
-- The intro plays on every load of the home page, reloads included. It skips only for deep links (any hash other than `#top`) and reduced motion. Playing it once per session was tried and rejected.
+- The intro plays on a first visit from outside the site (a typed URL, LinkedIn, Google…) and on a reload while the hero is in view. It skips navigation within the site (same-origin referrer, such as clicking the logo or Home), back/forward, reloads after scrolling past the hero, deep links (any hash other than `#top`) and reduced motion. Playing it once per session was tried and rejected.
 - The scrolling role line under the name (`RoleScroller.astro`) stays.
 - The home page has no Writing section, because the blog covers it.
 - Blog posts have no site header: a top bar holds the logo (linking home) and "← All posts". The blog list and posts keep the site footer, which pins to the bottom on short pages.
