@@ -2,109 +2,124 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import SiteHeader from '@/components/SiteHeader.astro';
 import SiteFooter from '@/components/SiteFooter.astro';
-import { getPosts } from '@/lib/blog';
+import { formatDate, getPosts } from '@/lib/blog';
 
 const posts = await getPosts();
-const format = (date: Date) => date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 ---
 
 <BaseLayout title="Blog — Chaitanya Sanapala" description="Writing by Chaitanya Sanapala on backend systems, AI pipelines and testing." noindex={!posts.length}>
   <SiteHeader />
   <main id="main" class="sheet blog">
-    <div class="wrap">
-      <div class="section-head">
-        <h1 class="display section-title" data-reveal="title"><span>Blog</span></h1>
-        <span class="kicker">({String(posts.length).padStart(2, '0')})</span>
-      </div>
+    <div class="wrap blog-wrap">
+      <h1 class="prompt-title">~/blog <small>{String(posts.length).padStart(2, '0')} {posts.length === 1 ? 'post' : 'posts'}</small></h1>
 
       {posts.length ? (
         <ol class="posts">
           {posts.map((post) => (
-            <li data-reveal>
+            <li>
               <a href={`/blog/${post.id}/`} class="post">
-                <time class="kicker" datetime={post.data.publishedAt.toISOString()}>{format(post.data.publishedAt)}</time>
-                <span>
-                  <span class="display post-title">{post.data.title}{post.data.draft && <span class="kicker post-draft">draft</span>}</span>
-                  <span class="post-description">{post.data.description}</span>
-                </span>
-                <span class="post-arrow" aria-hidden="true">→</span>
+                <span class="display post-title">{post.data.title}{post.data.draft && <span class="post-draft">draft</span>}</span>
+                <time class="post-date" datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
               </a>
             </li>
           ))}
         </ol>
       ) : (
-        <p class="empty" data-reveal>Nothing published yet. Notes on backend systems, AI pipelines and testing are on the way.</p>
+        <p class="empty">Nothing published yet.</p>
       )}
+
+      <a href="/" class="blog-back tap"><span aria-hidden="true">←</span> Back to home</a>
     </div>
   </main>
   <SiteFooter />
 </BaseLayout>
 
 <style>
+  /* One line per post: the title on the left and its date on the right. */
   .blog {
-    min-height: 70svh;
-    padding: 8rem 0 6rem;
+    min-height: 80svh;
+    padding: 8rem 0 4rem;
   }
 
-  .posts {
-    position: relative;
-    z-index: 0;
-    margin: 1.5rem 0 0;
-    padding: 0;
-    list-style: none;
-  }
+  .blog-wrap { max-width: 56rem; }
+
+  .posts { margin: 1.5rem 0 0; padding: 0; list-style: none; }
 
   .post {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: .35rem 1.5rem;
+    position: relative;
+    display: flex;
     align-items: baseline;
-    padding: 1.35rem 0;
-    transition: opacity .35s ease;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 1.4rem 0;
+    border-bottom: 1px solid var(--line);
   }
 
-  .post time { grid-column: 1 / -1; grid-row: 1; }
-
-  /* Hovering one post quietly dims the others. */
-  @media (hover: hover) {
-    .posts:has(.post:hover) .post:not(:hover) { opacity: .4; }
+  /* An accent line draws over the divider, so the date reads as part of the same link. */
+  .post::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: -1px;
+    left: 0;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .45s var(--ease-out);
   }
 
   .post-title {
-    display: flex;
-    align-items: baseline;
-    gap: .75rem;
-    font-size: 1.5rem;
-    line-height: 1.2;
+    font-size: clamp(1.25rem, 2.4vw, 1.6rem);
+    line-height: 1.25;
+    text-wrap: pretty;
     transition: color .3s ease;
   }
 
-  .post:hover .post-title { color: #fff; }
-  .post-draft { padding: .1rem .45rem; border: 1px solid var(--line); border-radius: 999px; }
-
-  .post-description {
-    display: block;
-    margin-top: .35rem;
-    color: var(--body);
-    line-height: 1.7;
-  }
-
-  .post-arrow {
+  .post-date {
+    flex: none;
     color: var(--muted);
-    transition: transform .4s var(--ease-out), color .3s ease;
+    font-size: .875rem;
+    font-variant-numeric: tabular-nums;
   }
 
-  .post:hover .post-arrow { color: var(--accent); transform: translateX(6px); }
+  .post:focus-visible .post-title { color: var(--accent); }
+  .post:focus-visible::after { transform: scaleX(1); }
 
-  .empty {
-    margin-top: 1.5rem;
-    color: var(--body);
-    font-size: 1.0625rem;
-    line-height: 1.7;
+  @media (hover: hover) {
+    .post:hover .post-title { color: var(--accent); }
+    .post:hover::after { transform: scaleX(1); }
+  }
+
+  .post-draft {
+    margin-left: .75rem;
+    padding: .05rem .5rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    font: 400 .75rem var(--font-sans);
+    vertical-align: .2em;
+  }
+
+  .empty { margin-top: 2rem; color: var(--body); font-size: 1.0625rem; }
+
+  .blog-back {
+    display: block;
+    width: fit-content;
+    margin: 4rem auto 0;
+    padding: .4rem .25rem;
+    color: var(--muted);
+    font-size: .875rem;
+    transition: color .2s ease;
+  }
+
+  .blog-back:hover, .blog-back:focus-visible { color: var(--text); }
+
+  @media (max-width: 40rem) {
+    .post { gap: 1.25rem; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .post, .post-title, .post-arrow { transition: none; }
-    .post:hover .post-arrow { transform: none; }
+    .post::after, .post-title, .blog-back { transition: none; }
   }
 </style>

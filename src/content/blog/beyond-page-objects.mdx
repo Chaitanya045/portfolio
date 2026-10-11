@@ -1,0 +1,405 @@
+---
+title: 'Beyond Page Objects: Scaling Playwright Frameworks for Modern SPAs'
+description: Why route-based page objects break down in component-driven SPAs, and how component objects and business objects keep Playwright suites readable as they grow.
+publishedAt: 2026-06-19
+tags:
+  - Playwright
+  - Test automation
+  - Software architecture
+canonicalUrl: https://medium.com/@schaitanya075/beyond-page-objects-scaling-playwright-frameworks-for-modern-spas-95ddf65085ec
+---
+
+Most Playwright automation projects begin with a simple and familiar architecture: the Page Object Model (POM).
+
+At first, it feels like the perfect solution.
+
+We create a page class for each route, keep locators inside page objects, expose page-specific actions, and write clean test cases in spec files.
+
+A typical project structure looks like this:
+
+```text
+tests/
+pages/
+├── LoginPage.ts
+├── DashboardPage.ts
+├── PatientsPage.ts
+└── TasksPage.ts
+```
+
+Example:
+
+```ts
+export class PatientsPage {
+  readonly addPatientBtn;
+  readonly searchInput;
+  readonly patientTable;
+
+  constructor(private page: Page) {
+    this.addPatientBtn = page.getByRole('button', {
+      name: 'Add Patient',
+    });
+    this.searchInput = page.getByPlaceholder('Search');
+    this.patientTable = page.locator('table');
+  }
+
+  async searchPatient(name: string) {
+    await this.searchInput.fill(name);
+  }
+
+  async clickAddPatient() {
+    await this.addPatientBtn.click();
+  }
+}
+```
+
+For small projects, this works extremely well.
+
+But what happens when the application grows?
+
+## The Scaling Problem Nobody Talks About
+
+Most modern web applications are Single Page Applications (SPAs) built using React, Angular, or Vue.
+
+Unlike traditional multi-page websites, SPAs are heavily component-driven.
+
+A typical route might look like this:
+
+```text
+Patients Route
+├── Header
+├── Navigation
+├── Filters
+├── Search Bar
+├── Data Table
+├── Pagination
+└── Modal
+```
+
+The problem is that these components are rarely unique to a single route.
+
+The same:
+
+- Header
+- Navigation
+- Table
+- Search
+- Filter Panel
+- Pagination
+- Modal
+
+appears throughout the application.
+
+However, many automation frameworks continue following strict route-based POM.
+
+```text
+PatientsPage.ts
+TasksPage.ts
+UsersPage.ts
+DevicesPage.ts
+```
+
+Over time, every page object starts implementing the same functionality.
+
+```ts
+async search() {}
+async sortByColumn() {}
+async applyFilters() {}
+async clearFilters() {}
+async openModal() {}
+```
+
+The result is predictable:
+
+- Massive page files
+- Duplicate code
+- Difficult maintenance
+- Violations of DRY principles
+- Longer onboarding time for new engineers
+
+I’ve seen page objects exceed 1,500 lines because every reusable component was implemented repeatedly across different pages.
+
+At this point, the issue is no longer Playwright.
+
+The issue is architecture.
+
+## The First Evolution: Component Objects
+
+Instead of organizing automation purely around routes, we can organize it around reusable UI components.
+
+A more scalable structure looks like this:
+
+```text
+src/
+├── pages/
+├── components/
+├── tests/
+├── fixtures/
+└── utils/
+```
+
+Component layer:
+
+```text
+components/
+├── TableComponent.ts
+├── FilterComponent.ts
+├── PaginationComponent.ts
+├── SearchComponent.ts
+└── ModalComponent.ts
+```
+
+Example:
+
+```ts
+export class SearchComponent {
+  constructor(
+    private page: Page,
+    private locator: Locator,
+  ) {}
+
+  async search(value: string) {
+    await this.locator.fill(value);
+  }
+
+  async clear() {
+    await this.locator.clear();
+  }
+}
+```
+
+Table component:
+
+```ts
+export class TableComponent {
+  constructor(private page: Page) {}
+
+  async sort(column: string) {
+    await this.page
+      .getByRole('columnheader', {
+        name: column,
+      })
+      .click();
+  }
+
+  async getRowCount() {
+    return this.page.locator('tbody tr').count();
+  }
+}
+```
+
+Now pages become lightweight.
+
+```ts
+export class PatientsPage {
+  readonly search;
+  readonly table;
+  readonly filters;
+
+  constructor(page: Page) {
+    this.search = new SearchComponent(
+      page,
+      page.getByPlaceholder('Search'),
+    );
+    this.table = new TableComponent(page);
+    this.filters = new FilterComponent(page);
+  }
+}
+```
+
+Instead of re-implementing search functionality on every page, we build it once and reuse it everywhere.
+
+This aligns our automation architecture with how modern frontend applications are actually built.
+
+## But Eventually Even Component Objects Become Insufficient
+
+As test suites continue growing, another problem emerges.
+
+Consider this test:
+
+```ts
+await patientsPage.search.search('John');
+await patientsPage.table.openRow(0);
+await patientsPage.modal.fillForm(data);
+await patientsPage.modal.save();
+```
+
+Technically correct.
+
+But is it expressing business intent?
+
+Not really.
+
+The test knows too much about the UI implementation.
+
+If tomorrow the workflow changes from a modal to a side panel, many tests may require updates.
+
+This is where Business Objects become valuable.
+
+## The Second Evolution: Business Objects
+
+Business Objects model business capabilities rather than pages or UI elements.
+
+Instead of asking:
+
+> “What button should I click?”
+
+we ask:
+
+> “What business action am I trying to perform?”
+
+Example:
+
+```text
+PatientManagement
+TaskManagement
+UserManagement
+DeviceManagement
+```
+
+Patient Management:
+
+```ts
+export class PatientManagement {
+  constructor(private patientsPage: PatientsPage) {}
+
+  async createPatient(patient: Patient) {
+    await this.patientsPage.openCreatePatient();
+    await this.patientsPage.fillPatientDetails(patient);
+    await this.patientsPage.savePatient();
+  }
+
+  async searchPatient(name: string) {
+    await this.patientsPage.search.search(name);
+  }
+}
+```
+
+Now the test becomes:
+
+```ts
+await patientManagement.createPatient(patientData);
+await patientManagement.searchPatient('John Doe');
+```
+
+Notice how the test no longer cares about:
+
+- Buttons
+- Inputs
+- Tables
+- Modals
+- Locators
+
+It only cares about business behavior.
+
+This is significantly easier to read and maintain.
+
+## Recommended Architecture for Enterprise Playwright Projects
+
+For large applications, I recommend a layered architecture:
+
+```text
+src/
+├── tests/
+│
+├── pages/
+│   ├── PatientsPage.ts
+│   ├── TasksPage.ts
+│   └── DevicesPage.ts
+│
+├── components/
+│   ├── TableComponent.ts
+│   ├── FilterComponent.ts
+│   ├── SearchComponent.ts
+│   ├── ModalComponent.ts
+│   └── PaginationComponent.ts
+│
+├── business/
+│   ├── PatientManagement.ts
+│   ├── TaskManagement.ts
+│   └── DeviceManagement.ts
+│
+├── fixtures/
+│
+├── test-data/
+│
+├── api/
+│
+└── utils/
+```
+
+Responsibilities:
+
+| Layer | Responsibility |
+| --- | --- |
+| Components | Reusable UI interactions |
+| Pages | Route-specific orchestration |
+| Business Objects | Business workflows |
+| Tests | Business validation |
+
+## A Good Test Should Read Like a Requirement
+
+Instead of:
+
+```ts
+await page
+  .getByRole('button', {
+    name: 'Add Patient',
+  })
+  .click();
+await page
+  .getByPlaceholder('Name')
+  .fill('John');
+await page
+  .getByRole('button', {
+    name: 'Save',
+  })
+  .click();
+```
+
+Or even:
+
+```ts
+await patientsPage.clickAddPatient();
+await patientsPage.fillName('John');
+await patientsPage.savePatient();
+```
+
+Prefer:
+
+```ts
+await patientManagement.createPatient(patient);
+```
+
+A test should describe business intent.
+
+Implementation details belong elsewhere.
+
+## Final Thoughts
+
+Page Object Model is not wrong.
+
+In fact, it remains one of the best foundations for Playwright automation.
+
+The mistake many teams make is treating Page Objects as the final architecture.
+
+As applications evolve, automation frameworks should evolve too.
+
+The progression often looks like this:
+
+```text
+Traditional POM
+      ↓
+Component Objects
+      ↓
+Business Objects
+      ↓
+Readable Enterprise Tests
+```
+
+Modern SPAs are built from reusable components and business workflows.
+
+Our automation frameworks should reflect the same reality.
+
+The goal is not to write tests that know how the UI works.
+
+The goal is to write tests that describe how the business works.

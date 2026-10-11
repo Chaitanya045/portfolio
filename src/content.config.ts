@@ -10,6 +10,9 @@ const blog = defineCollection({
     publishedAt: z.coerce.date(),
     draft: z.boolean().default(false),
     tags: z.array(z.string()).default([]),
+    // Where the post was first published, such as Medium. It becomes the page's canonical URL so
+    // search engines credit the original instead of treating this copy as duplicate content.
+    canonicalUrl: z.url().optional(),
   }),
 });
 

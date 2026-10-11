@@ -22,7 +22,7 @@ const right = [
 const all = [...left, ...right];
 ---
 
-<header class="site-header" data-site-header data-over-hero={overHero ? '' : undefined} data-intro-content>
+<header class="site-header" data-site-header data-over-hero={overHero ? '' : undefined} data-solid={overHero ? undefined : ''} data-instant data-intro-content>
   <nav class="capsule" aria-label="Primary" data-nav>
     <span class="capsule-glow" aria-hidden="true"></span>
     <span class="capsule-light" aria-hidden="true"></span>
@@ -62,6 +62,13 @@ const all = [...left, ...right];
     </ul>
   </div>
 </header>
+{overHero && (
+  <script is:inline>
+    // A link that lands partway down the page (such as /#contact) starts with the condensed
+    // header before the first paint, instead of morphing into it a moment later.
+    if (location.hash && location.hash !== '#top') document.currentScript.previousElementSibling.setAttribute('data-solid', '');
+  </script>
+)}
 
 <script>
   const header = document.querySelector<HTMLElement>('[data-site-header]');
@@ -75,14 +82,19 @@ const all = [...left, ...right];
     const menu = header.querySelector<HTMLElement>('[data-mobile-menu]');
     let current = links.find((link) => link.getAttribute('aria-current') === 'page');
 
+    // The header's first state appears without animation; transitions start after it settles.
+    const settle = () => requestAnimationFrame(() => requestAnimationFrame(() => header.removeAttribute('data-instant')));
+
     // Open over the hero; once it scrolls away the nav condenses into a floating capsule.
     if (hero && header.hasAttribute('data-over-hero')) {
+      let first = true;
       new IntersectionObserver(([entry]) => {
         header.toggleAttribute('data-solid', !entry?.isIntersecting);
         requestAnimationFrame(measure);
+        if (first) { first = false; settle(); }
       }, { rootMargin: '-80px 0px -100% 0px' }).observe(hero);
     } else {
-      header.setAttribute('data-solid', '');
+      settle();
     }
 
     // Each link needs its offset inside the capsule so its text can sample the shared light.
@@ -209,6 +221,15 @@ const all = [...left, ...right];
     color: var(--text);
     pointer-events: none;
   }
+
+  /* The header keeps its place while pages change, rather than fading out with the old page. */
+  .site-header { view-transition-name: site-header; }
+
+  .site-header[data-instant],
+  .site-header[data-instant] *,
+  .site-header[data-instant]::before,
+  .site-header[data-instant] *::before,
+  .site-header[data-instant] *::after { transition: none !important; }
 
   .site-header::before {
     content: '';

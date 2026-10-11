@@ -39,9 +39,9 @@ Each project title types itself in once, the first time it scrolls into view, an
 
 The hero name uses self-hosted Outfit Bold, a geometric sans with subtle letter spacing. Only the 700-weight Latin WOFF2 file is loaded, preloaded on the home page. Its SIL Open Font License is retained in `licenses/outfit.txt`.
 
-Below the name, a single static line shows the title from `profile.title`.
+Below the name, `RoleScroller.astro` cycles through resume-backed roles with a feathered vertical scroll every four seconds. Roles softly blur and fade during each slide; a thin blue progress line fills over the same four-second interval. Text and progress pause together during the intro, when the tab is hidden, on hover, and with the keyboard-accessible motion control. It uses CSS animation without React hydration or additional dependencies. Reduced motion shows a static role and hides the progress line. Screen readers receive the complete role list as static text.
 
-On a fine pointer, the name has a small magnetic drift and a warm highlight that follows the pointer. Motion generates the spring CSS at build time; no animation library is shipped for this interaction. Pointer updates run at most once per animation frame and stop on leave. Pointer effects are disabled for touch, reduced motion, and the motion pause control.
+On a fine pointer, the name has a small magnetic drift and a warm highlight that follows the pointer. Motion generates the spring CSS at build time; no animation library is shipped for this interaction. Pointer updates run at most once per animation frame and stop on leave. Hovering over the role line holds a complete role for reading. The roles are Software Engineer, Full Stack Engineer, Applied AI Engineer, QA Automation Engineer and Vibe Coder. Pointer effects are disabled for touch, reduced motion, and the motion pause control.
 
 Interaction references: [Motion CSS springs](https://motion.dev/docs/spring) and [Aceternity Text Hover Effect](https://ui.aceternity.com/components/text-hover-effect). [GSAP quickTo](https://gsap.com/docs/v3/GSAP/gsap.quickTo%28%29/) and [Anime.js scopes](https://animejs.com/documentation/scope/) were also reviewed; the existing Motion dependency can generate the spring during the build for this small effect.
 
@@ -55,7 +55,9 @@ The home page also has a 1.6-second ignition intro: a vertical glowing blue line
 
 ## Writing
 
-`src/content/blog/post-template.mdx` is a draft template, visible only in development at `/blog/post-template`. Drafts are excluded from production routes. To publish a post, set `draft: false` in its frontmatter; use `title`, `description`, `publishedAt`, and optional `tags`. The Blog links in the header, footer and ⌘K menu appear automatically once at least one post is published; until then the empty blog index is marked `noindex` and left out of the sitemap.
+Posts republished from elsewhere, such as Medium, set `canonicalUrl` to the original article: the page's canonical link points there, the post is left out of the sitemap, and it shows an "Originally on Medium" link. Published posts also appear in the home page's `~/writing` section, the ⌘K menu and the RSS feed at `/rss.xml`. Code blocks are highlighted at build time with Shiki's Tokyo Night theme.
+
+Posts live in `src/content/blog/` as MDX. Set `draft: true` to preview a post only in development; drafts are excluded from production routes. To publish, set `draft: false` (or leave it out); use `title`, `description`, `publishedAt`, and optional `tags`. The Blog links in the header, footer and ⌘K menu appear automatically once at least one post is published; until then the empty blog index is marked `noindex` and left out of the sitemap.
 
 ## Deployment
 

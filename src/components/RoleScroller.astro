@@ -1,0 +1,137 @@
+---
+const roles = [
+  'Software Engineer',
+  'Full Stack Engineer',
+  'Applied AI Engineer',
+  'QA Automation Engineer',
+  'Vibe Coder',
+];
+---
+
+<div class="role-scroller" data-role-scroller>
+  <p class="sr-only">Roles: {roles.join(', ')}.</p>
+  <div class="role-window" aria-hidden="true">
+    <div class="role-track">
+      {[...roles, roles[0]].map((role) => <span class="role-item">{role}</span>)}
+    </div>
+  </div>
+  <div class="role-progress" aria-hidden="true"><span class="role-progress-fill"></span></div>
+</div>
+
+<script>
+  const scroller = document.querySelector<HTMLElement>('[data-role-scroller]');
+  const syncVisibility = () => scroller?.toggleAttribute('data-hidden', document.hidden);
+  syncVisibility();
+  document.addEventListener('visibilitychange', syncVisibility);
+
+  if (scroller) {
+    const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    const hero = scroller.closest<HTMLElement>('[data-hero]');
+    let readingTimer: number | undefined;
+    const stopReading = () => {
+      clearTimeout(readingTimer);
+      scroller.removeAttribute('data-reading');
+    };
+    scroller.addEventListener('pointerenter', (event) => {
+      if (event.pointerType === 'touch' || !finePointer.matches || reducedMotion.matches) return;
+      if (hero?.dataset.motion === 'paused' || document.documentElement.hasAttribute('data-intro')) return;
+      const animation = scroller.querySelector('.role-track')?.getAnimations()[0];
+      // Let an active slide finish naturally before holding a complete role.
+      let delay = 0;
+      if (animation && typeof animation.currentTime === 'number') {
+        const phase = animation.currentTime % 4000;
+        if (phase >= 3200) delay = 4000 - phase + 20;
+      }
+      clearTimeout(readingTimer);
+      readingTimer = window.setTimeout(() => scroller.setAttribute('data-reading', ''), delay);
+    });
+    scroller.addEventListener('pointerleave', stopReading);
+    scroller.addEventListener('pointercancel', stopReading);
+    document.addEventListener('visibilitychange', stopReading);
+    finePointer.addEventListener('change', stopReading);
+    reducedMotion.addEventListener('change', stopReading);
+    hero?.addEventListener('blaze:motionchange', stopReading);
+  }
+</script>
+
+<style>
+  .role-scroller {
+    --role-play-state: running;
+    color: #a9b6cf;
+    font-family: 'Outfit', 'Segoe UI', sans-serif;
+    font-size: clamp(.8rem, 1.1vw, 1rem);
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    transition: color .25s ease;
+  }
+
+  .role-window {
+    height: 2.5em;
+    overflow: hidden;
+    mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+  }
+
+  .role-track {
+    animation: roles-scroll 20s cubic-bezier(.65, 0, .35, 1) infinite;
+    animation-play-state: var(--role-play-state);
+  }
+
+  .role-item {
+    display: block;
+    height: 2.5em;
+    line-height: 2.5;
+    white-space: nowrap;
+  }
+
+  .role-progress {
+    width: 4.5rem;
+    height: 1px;
+    margin: .75rem auto 0;
+    overflow: hidden;
+    background: #7aa7ff24;
+  }
+
+  .role-progress-fill {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, #3d6be0, #7aa7ff);
+    transform-origin: left;
+    opacity: .8;
+    animation: role-progress 4s linear infinite;
+    animation-play-state: var(--role-play-state);
+  }
+
+  @keyframes role-progress {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+
+  /* Five readable holds (3.2s each, then a 0.8s slide) and a duplicate first row make the loop seamless. */
+  @keyframes roles-scroll {
+    0%, 16% { transform: translateY(0); opacity: 1; filter: blur(0); }
+    20%, 36% { transform: translateY(-16.6667%); opacity: 1; filter: blur(0); }
+    40%, 56% { transform: translateY(-33.3333%); opacity: 1; filter: blur(0); }
+    60%, 76% { transform: translateY(-50%); opacity: 1; filter: blur(0); }
+    80%, 96% { transform: translateY(-66.6667%); opacity: 1; filter: blur(0); }
+    100% { transform: translateY(-83.3333%); opacity: 1; filter: blur(0); }
+    18%, 38%, 58%, 78%, 98% { opacity: .35; filter: blur(2px); }
+  }
+
+  :global(html[data-intro='playing']) .role-scroller,
+  :global([data-hero][data-motion='paused']) .role-scroller,
+  .role-scroller[data-hidden],
+  .role-scroller[data-reading] {
+    --role-play-state: paused;
+  }
+
+  .role-scroller[data-reading] { color: #c4d6ff; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .role-track { animation: none; }
+    .role-scroller { transition: none; }
+    .role-progress { display: none; }
+    .role-progress-fill { animation: none; }
+  }
+</style>

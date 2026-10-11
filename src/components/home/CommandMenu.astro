@@ -1,9 +1,10 @@
 ---
 import { getCollection } from 'astro:content';
 import { experience, jobId, profile } from '@/data/resume';
-import { hasPublishedPosts } from '@/lib/blog';
 
 const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
 interface Destination { label: string; hint: string; href: string; external?: boolean }
 
 const destinations: Destination[] = [
@@ -11,7 +12,8 @@ const destinations: Destination[] = [
   ...experience.map((job) => ({ label: job.company, hint: 'Experience', href: `#${jobId(job.company)}` })),
   { label: 'Email Chaitanya', hint: 'Contact', href: `mailto:${profile.email}` },
   { label: 'Open résumé', hint: 'PDF', href: profile.resume, external: true },
-  ...(await hasPublishedPosts() ? [{ label: 'Read the blog', hint: 'Writing', href: '/blog/' }] : []),
+  ...posts.slice(0, 5).map(({ id, data }) => ({ label: data.title, hint: 'Post', href: `/blog/${id}/` })),
+  ...(posts.length ? [{ label: 'All blog posts', hint: 'Writing', href: '/blog/' }] : []),
   { label: 'GitHub', hint: 'Profile', href: profile.github, external: true },
   { label: 'LinkedIn', hint: 'Profile', href: profile.linkedin, external: true },
 ];

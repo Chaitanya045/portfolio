@@ -2,11 +2,13 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import BlazeBackground from '@/components/BlazeBackground.astro';
 import HeroIntro from '@/components/HeroIntro.astro';
+import RoleScroller from '@/components/RoleScroller.astro';
 import SiteHeader from '@/components/SiteHeader.astro';
 import SiteFooter from '@/components/SiteFooter.astro';
 import Intro from '@/components/home/Intro.astro';
 import SelectedWork from '@/components/home/SelectedWork.astro';
 import Experience from '@/components/home/Experience.astro';
+import Writing from '@/components/home/Writing.astro';
 import Contact from '@/components/home/Contact.astro';
 import CommandMenu from '@/components/home/CommandMenu.astro';
 import { profile } from '@/data/resume';
@@ -41,7 +43,7 @@ const person = {
           <span class="hero-name-ink" data-name-ink>CHAITANYA<span class="hero-name-highlight" aria-hidden="true">CHAITANYA</span></span>
         </h1>
         <div class="hero-sub">
-          <p class="hero-role">{profile.title}</p>
+          <RoleScroller />
           <ul class="hero-socials" aria-label="Elsewhere">
             <li>
               <a class="hero-social" href={profile.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub (opens in a new tab)">
@@ -67,6 +69,7 @@ const person = {
     <Intro />
     <SelectedWork />
     <Experience />
+    <Writing />
     <Contact />
   </div>
   </main>
@@ -147,23 +150,13 @@ const person = {
 <style>
   .hero-title { position: relative; }
 
-  /* The role and social links hang below the name without shifting it off centre. */
+  /* Roles and social links hang below the name without shifting it off centre. */
   .hero-sub {
     position: absolute;
     top: calc(100% + clamp(1rem, 2vw, 1.75rem));
     left: 50%;
     transform: translateX(-50%);
     width: min(calc(100vw - 48px), 40rem);
-  }
-
-  .hero-role {
-    color: #a9b6cf;
-    font-family: 'Outfit', 'Segoe UI', sans-serif;
-    font-size: clamp(.8rem, 1.1vw, 1rem);
-    font-weight: 700;
-    line-height: 2.5;
-    letter-spacing: .12em;
-    text-transform: uppercase;
   }
 
   .hero-socials {

@@ -11,17 +11,29 @@ import tailwindcss from '@tailwindcss/vite';
 const vercelDomain = process.env.VERCEL_PROJECT_PRODUCTION_URL;
 const site = process.env.SITE_URL || (vercelDomain ? `https://${vercelDomain}` : 'http://localhost:4321');
 
-// The blog index is marked noindex until a post is published, so keep it out of the sitemap too.
+// Read blog front matter up front: the blog index is noindex until a post is published, and posts
+// republished from elsewhere (with a canonicalUrl) belong to their original URL, not this sitemap.
 const blogDir = new URL('./src/content/blog/', import.meta.url);
-const hasPublishedPosts = existsSync(blogDir) && readdirSync(blogDir)
-  .filter((file) => /\.mdx?$/.test(file))
-  .some((file) => !/^draft:\s*true\s*$/m.test(readFileSync(new URL(file, blogDir), 'utf8')));
+const posts = existsSync(blogDir)
+  ? readdirSync(blogDir)
+    .filter((file) => /\.mdx?$/.test(file))
+    .map((file) => ({ slug: file.replace(/\.mdx?$/, ''), source: readFileSync(new URL(file, blogDir), 'utf8') }))
+  : [];
+const published = posts.filter(({ source }) => !/^draft:\s*true\s*$/m.test(source));
+const republished = new Set(published.filter(({ source }) => /^canonicalUrl:/m.test(source)).map(({ slug }) => `/blog/${slug}/`));
+/** @param {string} page */
+const inSitemap = (page) => {
+  const { pathname } = new URL(page);
+  if (pathname === '/blog/') return published.length > 0;
+  return !republished.has(pathname);
+};
 
 // https://astro.build/config
 export default defineConfig({
   site,
   output: 'static',
-  integrations: [mdx(), sitemap({ filter: (page) => hasPublishedPosts || !page.endsWith('/blog/') })],
+  integrations: [mdx(), sitemap({ filter: inSitemap })],
+  markdown: { shikiConfig: { theme: 'tokyo-night' } },
   adapter: vercel(),
   vite: { plugins: [tailwindcss()] },
 });
