@@ -12,6 +12,7 @@ const showBlog = await hasPublishedPosts();
       <a class="tap" href={profile.resume} target="_blank" rel="noopener">Résumé ↗<span class="sr-only"> (PDF, opens in a new tab)</span></a>
       <a class="tap" href={profile.github} target="_blank" rel="noopener noreferrer">GitHub ↗<span class="sr-only"> (opens in a new tab)</span></a>
       <a class="tap" href={profile.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn ↗<span class="sr-only"> (opens in a new tab)</span></a>
+      <a class="tap" href={profile.x} target="_blank" rel="noopener noreferrer">X ↗<span class="sr-only"> (opens in a new tab)</span></a>
       {showBlog && <a class="tap" href="/blog/">Blog</a>}
     </nav>
   </div></div>
@@ -36,7 +37,7 @@ const showBlog = await hasPublishedPosts();
     border-top: 1px solid var(--line);
   }
 
-  nav { display: flex; gap: 2rem; }
+  nav { display: flex; flex-wrap: wrap; gap: .75rem 2rem; }
   a { transition: color .2s ease; }
   a:hover, a:focus-visible { color: var(--text); }
 </style>

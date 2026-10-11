@@ -7,6 +7,8 @@ export const profile = {
   email: 'schaitanya075@gmail.com',
   github: 'https://github.com/Chaitanya045',
   linkedin: 'https://www.linkedin.com/in/chaitanya-sanapala-390609241/',
+  x: 'https://x.com/chrx_chaitanya',
+  xHandle: '@chrx_chaitanya',
   // A web copy of the résumé without the phone number, generated from the job-search build script.
   resume: '/Chaitanya_Sanapala_Resume.pdf',
   statement: 'Software engineer working across backend development, SaaS quality engineering and AI systems.',
