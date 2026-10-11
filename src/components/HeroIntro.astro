@@ -30,19 +30,19 @@
 
   .intro-shutter-top {
     top: 0;
-    background: linear-gradient(to bottom, #04060d calc(100% - 80px), transparent);
+    background: linear-gradient(to bottom, var(--hero-shade) calc(100% - 80px), transparent);
     animation-name: ignition-open-top;
   }
   .intro-shutter-bottom {
     bottom: 0;
-    background: linear-gradient(to top, #04060d calc(100% - 80px), transparent);
+    background: linear-gradient(to top, var(--hero-shade) calc(100% - 80px), transparent);
     animation-name: ignition-open-bottom;
   }
 
   .intro-glow {
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse at center, #2348b059, #142e7026 35%, transparent 70%);
+    background: radial-gradient(ellipse at center, color-mix(in srgb, var(--intro-glow) 34.90196078%, transparent), color-mix(in srgb, var(--hero-glow-start) 14.90196078%, transparent) 35%, transparent 70%);
     will-change: transform, opacity;
     animation: ignition-glow 1600ms cubic-bezier(.4, 0, .2, 1) both;
   }
@@ -54,8 +54,8 @@
     width: 100%;
     height: 2px;
     border-radius: 2px;
-    background: #4f7dff;
-    box-shadow: 0 0 12px #3c6cff80, 0 0 34px #1b3fa838;
+    background: var(--accent-strong);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--intro-line-glow) 50.19607843%, transparent), 0 0 34px color-mix(in srgb, var(--intro-line-halo) 21.96078431%, transparent);
     transform-origin: center;
     will-change: transform, opacity;
     animation: ignition-line 1600ms cubic-bezier(.65, 0, .25, 1) both;

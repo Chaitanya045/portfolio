@@ -58,7 +58,7 @@ const roles = [
 <style>
   .role-scroller {
     --role-play-state: running;
-    color: #a9b6cf;
+    color: var(--hero-secondary);
     font-family: 'Outfit', 'Segoe UI', sans-serif;
     font-size: clamp(.8rem, 1.1vw, 1rem);
     font-weight: 700;
@@ -90,13 +90,13 @@ const roles = [
     height: 1px;
     margin: .75rem auto 0;
     overflow: hidden;
-    background: #7aa7ff24;
+    background: color-mix(in srgb, var(--hero-name) 14.11764706%, transparent);
   }
 
   .role-progress-fill {
     display: block;
     height: 100%;
-    background: linear-gradient(90deg, #3d6be0, #7aa7ff);
+    background: linear-gradient(90deg, var(--progress-start), var(--hero-name));
     transform-origin: left;
     opacity: .8;
     animation: role-progress 4s linear infinite;
@@ -126,7 +126,7 @@ const roles = [
     --role-play-state: paused;
   }
 
-  .role-scroller[data-reading] { color: #c4d6ff; }
+  .role-scroller[data-reading] { color: var(--role-reading); }
 
   @media (prefers-reduced-motion: reduce) {
     .role-track { animation: none; }

@@ -51,16 +51,16 @@ const { cover, coverAlt, title } = entry.data;
     gap: .35rem;
     height: 100%;
     padding: clamp(1.25rem, 4vw, 3rem);
-    color: #e2e8f3;
-    background: radial-gradient(ellipse at 80% 0%, #12234a, transparent 60%), #050810;
+    color: var(--cover-text);
+    background: radial-gradient(ellipse at 80% 0%, var(--hero-hover), transparent 60%), var(--cover-bg);
     font-family: var(--font-mono);
     font-size: clamp(.65rem, 1.2vw, .9rem);
     white-space: nowrap;
   }
 
   .tc-gap { margin-top: .8rem; }
-  .tc-prompt { color: #8fb4ff; }
-  .tc-label { display: inline-block; width: 3.5em; color: #7c879c; }
-  .tc-ok { color: #9fd3a6; }
-  .tc-dim { color: #7c879c; }
+  .tc-prompt { color: var(--cover-prompt); }
+  .tc-label { display: inline-block; width: 3.5em; color: var(--cover-muted); }
+  .tc-ok { color: var(--success); }
+  .tc-dim { color: var(--cover-muted); }
 </style>

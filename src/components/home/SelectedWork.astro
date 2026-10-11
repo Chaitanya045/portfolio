@@ -152,7 +152,7 @@ const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.
     font-size: .8125rem;
   }
 
-  .project-stack span { color: #52617d; }
+  .project-stack span { color: var(--stack-separator); }
 
   @media (max-width: 44rem) {
     .project-head { display: block; }

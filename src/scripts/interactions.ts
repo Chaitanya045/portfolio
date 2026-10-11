@@ -1,8 +1,22 @@
+import { applyTheme, themes } from '@/lib/themes';
+
 // Small, user-driven interactions shared by every page. Content never depends on them:
 // without JavaScript, or with reduced motion, everything renders in its final state.
 
 const root = document.documentElement;
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+function restoreTheme() {
+  let saved;
+  try { saved = localStorage.getItem('theme'); } catch { return; }
+  const theme = themes.find((item) => item.id === saved) ?? themes[0];
+  if (theme.id !== root.dataset.theme) applyTheme(theme);
+}
+// Cached documents and other open pages should also reflect the saved choice.
+window.addEventListener('pageshow', restoreTheme);
+window.addEventListener('storage', (event) => {
+  if (event.key === 'theme' || event.key === null) restoreTheme();
+});
 
 // Let the logo draw itself once the hero intro has finished.
 if (root.hasAttribute('data-intro')) {

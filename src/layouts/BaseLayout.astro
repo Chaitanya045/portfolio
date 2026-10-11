@@ -3,6 +3,8 @@ import '@fontsource-variable/inter';
 import '@fontsource/jetbrains-mono/400.css';
 import '@/styles/global.css';
 
+import { themes, getThemeInitScript } from '@/lib/themes';
+
 import { profile } from '@/data/resume';
 import { hasPublishedPosts } from '@/lib/blog';
 
@@ -40,8 +42,9 @@ const hasFeed = await hasPublishedPosts();
     <meta name="author" content={profile.name} />
     <meta name="generator" content={Astro.generator} />
     {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
-    <meta name="theme-color" content="#070b16" />
-    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content={themes[0].background} />
+    <meta name="color-scheme" content={themes[0].scheme} />
+    <script is:inline set:html={getThemeInitScript()} />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />

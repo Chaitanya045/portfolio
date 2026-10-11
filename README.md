@@ -45,6 +45,12 @@ On a fine pointer, the name has a small magnetic drift and a warm highlight that
 
 Interaction references: [Motion CSS springs](https://motion.dev/docs/spring) and [Aceternity Text Hover Effect](https://ui.aceternity.com/components/text-hover-effect). [GSAP quickTo](https://gsap.com/docs/v3/GSAP/gsap.quickTo%28%29/) and [Anime.js scopes](https://animejs.com/documentation/scope/) were also reviewed; the existing Motion dependency can generate the spring during the build for this small effect.
 
+## Colour themes
+
+Click the header logo while the home hero is in view to cycle Blue → Green → Rust → Paper → Graphite. Elsewhere it keeps its home/top link. The choice is saved as `theme` in localStorage and restored in the document head before paint. Switches crossfade where View Transitions are available, respect reduced motion, and announce the theme with a quiet label and a polite live region. Paper uses a CSS hero background and keeps syntax-highlighted code blocks dark.
+
+To add a theme, append its ID, display name, background and colour scheme to `src/lib/themes.ts`, then add a matching `:root[data-theme="…"]` block in `src/styles/global.css`. Define the palette and space-separated, normalized `--spark-rgb` / `--smoke-rgb` values; secondary tokens inherit theme-aware aliases. Run `node scripts/check-theme-contrast.mjs` to verify text, body, muted and accent against both background and surface (minimum 4.5:1). With a dev server on port 4337, `PLAYWRIGHT_MODULE=/path/to/playwright-core/index.mjs node scripts/verify-themes.mjs` runs browser checks using `/usr/bin/chromium` and saves screenshots in `artifacts/themes/`; Playwright is supplied externally rather than added as a dependency.
+
 ## Ambient background
 
 The home page uses a background-only adaptation of [Canvas UI Blaze](https://canvasui.dev/docs/components/blaze). The original license is retained in `licenses/canvas-ui.txt`.
