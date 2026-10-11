@@ -14,7 +14,8 @@
   - Say that it was verified this way, and ask the owner to confirm in a real browser.
 - **There's no GPU.** Chromium reports SwiftShader, so `src/lib/blaze/renderer.ts` deliberately skips the WebGL hero and the CSS glow shows instead.
   - For captures only, an init script can drop `failIfMajorPerformanceCaveat` and spoof `UNMASKED_RENDERER_WEBGL`. Launch with `--enable-unsafe-swiftshader --use-angle=swiftshader`.
-  - `docs/hero.gif` was made this way: CDP screencast frames → ffmpeg `palettegen`/`paletteuse` at 960 px and 15 fps. Never ship this override.
+  - `docs/hero.png` (the README screenshot) was made this way: 1440×810 at 2x, with a same-site `referer` so the intro skips and the hero is settled. Never ship this override.
+  - A GIF of the intro was tried and rejected: on GitHub it flashed white between frames and stalled, so the README uses a still screenshot.
 
 ## Baselines
 

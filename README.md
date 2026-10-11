@@ -2,7 +2,7 @@
 
 The personal site of Chaitanya Sanapala, a software engineer in Bangalore working across backend development, SaaS quality engineering and AI systems. It covers selected work, experience, writing and contact details.
 
-![The hero: an ignition intro opens onto the name, a WebGL spark background and the logo drawing itself into the header](docs/hero.gif)
+![The home page hero in the Graphite theme: the name over a WebGL spark background, with the logo and navigation above](docs/hero.png)
 
 ## Features
 
@@ -106,6 +106,6 @@ The personal content is not covered by that licence. It remains © Chaitanya San
 - the profile and experience text in `src/data/resume.ts`;
 - the résumé PDF;
 - the project screenshots in `src/assets/work/`;
-- the C/S logo design and its renders, including the favicon, app icons, `public/og.png` and `docs/hero.gif`.
+- the C/S logo design and its renders, including the favicon, app icons, `public/og.png` and `docs/hero.png`.
 
 If you fork the site, replace these with your own. The third-party fonts and the adapted background keep their own licences, listed above.

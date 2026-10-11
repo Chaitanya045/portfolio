@@ -12,7 +12,7 @@ Each item is a choice the owner made or confirmed. Don't reverse one without ask
 - Paper (light) theme: the WebGL canvas is hidden and paused, and the hero keeps only its CSS gradient. A colour-inverted shader was tried and looked muddy.
 - Clicking the header logo while the hero is in view cycles the theme. On other pages it goes home.
 - The hero social icons are GitHub, LinkedIn and X (`@chrx_chaitanya`), filled with `--hero-name` on hover.
-- The code is MIT-licensed. `LICENSE` stays the unmodified MIT text, so GitHub still detects it. The README's License section keeps the personal content (src/content, resume.ts, the résumé PDF, screenshots, logo and its renders, docs/hero.gif) all rights reserved.
+- The code is MIT-licensed. `LICENSE` stays the unmodified MIT text, so GitHub still detects it. The README's License section keeps the personal content (src/content, resume.ts, the résumé PDF, screenshots, logo and its renders, docs/hero.png) all rights reserved.
 
 ## Open: ask before acting
 
