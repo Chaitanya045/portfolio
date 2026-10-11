@@ -98,7 +98,10 @@ const all = [...left, ...right];
         header.toggleAttribute('data-solid', !entry?.isIntersecting);
         requestAnimationFrame(measure);
         if (first) { first = false; settle(); }
-      }, { rootMargin: '-80px 0px -100% 0px' }).observe(hero);
+        // The hero starts at the top of the page, so it meets the viewport below the header's 80px
+        // exactly while its bottom edge is still below the header. (A zero-height band such as
+        // '-80px 0px -100% 0px' never intersects in Firefox, which left the header stuck solid.)
+      }, { rootMargin: '-80px 0px 0px 0px' }).observe(hero);
     } else {
       settle();
     }
@@ -304,9 +307,12 @@ const all = [...left, ...right];
     padding: 1px;
     border-radius: inherit;
     background: conic-gradient(from var(--glow-angle), transparent 0 72%, color-mix(in srgb, var(--hero-name) 60%, transparent) 86%, var(--accent-pale) 90%, transparent 96%);
-    mask: linear-gradient(var(--shadow) 0 0) content-box exclude, linear-gradient(var(--shadow) 0 0);
-    -webkit-mask: linear-gradient(var(--shadow) 0 0) content-box, linear-gradient(var(--shadow) 0 0);
+    /* Cut out the middle so only the 1px ring shows. The standard properties come last: Firefox
+       treats -webkit-mask as an alias of mask, so a later -webkit-mask would reset the composite. */
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
     opacity: 0;
     pointer-events: none;
     transition: opacity .6s ease;

@@ -23,3 +23,14 @@ The hero content starts at an opacity of .01, not 0. That keeps the hero name el
 - Going to a post, a `pagereveal` script adds the `reading` type; `html:active-view-transition-type(reading)` makes the article rise in.
 - Lesson: `::view-transition-group(site-logo)` needs `z-index: 1`. Without it, the `site-header` group paints over the travelling logo on the way back to the list, and the logo dims and blinks as it lands. The logo moves as a single image: its old view is hidden and its new view isn't animated. The header fade-in, `.35s` after a `.2s` delay, ends as the logo lands.
 - `post-morph` snapshots use `height: 100%; width: auto; object-fit: none; object-position: left top`. Without these, text stretches when the title's size or wrapping changes between pages.
+
+## Firefox fallback (scripted morph)
+
+Firefox 151 supports only same-document view transitions: there's no `@view-transition` rule and no `pagereveal`. `src/scripts/page-morph.ts` stands in for the cross-page morphs there:
+- **Leaving a page:** on `pagehide`, it saves the on-screen rectangles of named elements to `sessionStorage['page-morph']`. That includes the `[style*=view-transition-name]` elements, the header and `.logo`.
+- **Arriving:** the next page animates the matching elements from those rectangles (translate plus scale, 550 ms, the same easing as the transitions) and fades in everything else.
+- **Before first paint:** an inline head script in `BaseLayout.astro` sets `html[data-morph]` (body hidden) until the morph is placed, with a 600 ms safety timeout.
+- **Where it runs:** only when `!('onpagereveal' in window)`, and never under reduced motion. Chrome and Safari keep their native transitions. Once Firefox ships cross-document transitions, the fallback turns itself off.
+- **Text scale:** text scales by font-size ratio, capped so a title that rewraps wider can't run off the screen.
+- **Signal to components:** it sets `data-morphed` and dispatches `pagemorph`. `SelectedWork.astro` listens for it to skip the title typing effect, just as it does for `pagereveal`. Any new entrance effect that would fight a morph should listen for both.
+

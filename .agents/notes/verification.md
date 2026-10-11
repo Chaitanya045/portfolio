@@ -17,6 +17,26 @@
   - `docs/hero.png` (the README screenshot) was made this way: 1440×810 at 2x, with a same-site `referer` so the intro skips and the hero is settled. Never ship this override.
   - A GIF of the intro was tried and rejected: on GitHub it flashed white between frames and stalled, so the README uses a still screenshot.
 
+## Cross-browser checks
+
+`scripts/verify-browsers.mjs <chromium|firefox|webkit> [wsEndpoint]` runs against a preview server and checks two things:
+- Layout across 10 sizes and 7 pages: overflow, small tap targets, the footer pinned to the bottom, and console errors. It saves screenshots to `artifacts/browsers/`.
+- Features: the intro rules, theme cycling, the solid header on scroll, the ⌘K menu, the mobile menu, and blog navigation in both directions.
+
+Set it up per browser:
+- **Firefox:** run `npx playwright@<core version> install firefox` and it runs directly.
+- **WebKit:** it can't launch on this distro because the system libicu and libxml2 are too new. Run it in Docker instead and pass `ws://127.0.0.1:3123/`:
+  `docker run -d --name pw-webkit --network host --init --ipc=host mcr.microsoft.com/playwright:v<core version>-noble sh -c "cd /tmp && npx -y playwright@<core version> run-server --port 3123 --host 127.0.0.1"`
+- **Chromium:** the feature pass adds `@view-transition { navigation: none }`, because cross-document transitions freeze headless Chromium. Firefox and WebKit navigate normally with transitions on.
+
+Lessons from the first run (2026-10-11):
+- An IntersectionObserver `rootMargin` that leaves a zero-height or negative band, such as `-80px 0px -100% 0px`, never reports intersecting in Firefox. The header stayed solid and the logo theme switch was disabled.
+- Put prefixed masks first and the standard `mask` / `mask-composite: exclude` last. Firefox treats `-webkit-mask` as `mask`, so a later `-webkit-mask` reset the composite and the capsule glow filled the whole capsule. With the old order WebKit drew no glow at all.
+- Firefox's page transitions are scripted (see motion.md). Check them by recording a video (`recordVideo` works in Firefox) and pulling frames with ffmpeg; screenshots during navigation miss the animation.
+- Engines wrap text a word or two differently (WebKit's 320px home page is about 30px taller). That's expected, not a bug.
+
+Real Safari on macOS and iOS still needs a check on the owner's devices: WebKit in Docker is close to Safari but not identical.
+
 ## Baselines
 
 Lighthouse (2026-10-11):

@@ -45,6 +45,19 @@ const hasFeed = await hasPublishedPosts();
     <meta name="theme-color" content={themes[0].background} />
     <meta name="color-scheme" content={themes[0].scheme} />
     <script is:inline set:html={getThemeInitScript()} />
+    <script is:inline>
+      // Firefox replays cross-page morphs in script (src/scripts/page-morph.ts). Hold the first paint
+      // until the moving elements are placed, so they don't flash at their final spot.
+      (() => {
+        if ('onpagereveal' in window || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        let snapshot;
+        try { snapshot = JSON.parse(sessionStorage.getItem('page-morph') || 'null'); } catch {}
+        if (!snapshot || Date.now() - snapshot.at > 2000 || snapshot.from === location.href) return;
+        const root = document.documentElement;
+        root.dataset.morph = '';
+        setTimeout(() => delete root.dataset.morph, 600);
+      })();
+    </script>
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -125,6 +138,7 @@ const hasFeed = await hasPublishedPosts();
     <slot />
     <script>
       import '@/scripts/interactions';
+      import '@/scripts/page-morph';
     </script>
   </body>
 </html>

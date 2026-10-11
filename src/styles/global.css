@@ -198,6 +198,10 @@
 /* Cross-document view transitions morph project cards into case studies. */
 @view-transition { navigation: auto; }
 
+/* Browsers without them get a scripted morph (src/scripts/page-morph.ts); this holds the first
+   paint until it has placed the moving elements. */
+html[data-morph] body { visibility: hidden; }
+
 @media (prefers-reduced-motion: reduce) {
   @view-transition { navigation: none; }
 }

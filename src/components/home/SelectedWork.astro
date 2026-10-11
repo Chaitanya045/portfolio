@@ -57,6 +57,9 @@ const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.
     addEventListener('pageswap', finishAll);
     addEventListener('pagehide', finishAll);
     addEventListener('pagereveal', (event) => { if (event.viewTransition) finishAll(); });
+    // The scripted morph used where cross-document transitions are missing (page-morph.ts).
+    if (document.documentElement.hasAttribute('data-morphed')) finishAll();
+    addEventListener('pagemorph', finishAll);
   }
 </script>
 

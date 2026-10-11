@@ -10,6 +10,7 @@ The personal site of Chaitanya Sanapala, a software engineer in Bangalore workin
 - **Five colour themes:** Graphite (default), Blue, Green, Rust and Paper. Click the header logo while the hero is in view to cycle them.
 - **Case studies:** one MDX file per project, with highlights and covers that morph out of the home page through view transitions.
 - **Blog:** MDX posts with an RSS feed, build-time syntax highlighting, a reading progress line and transitions between the list and each post.
+- **Page transitions:** titles, dates and the logo morph between pages with cross-document view transitions in Chrome and Safari. Firefox, which lacks them, gets a scripted version (`src/scripts/page-morph.ts`).
 - **⌘K menu:** search and jump to projects, roles, posts and contact links.
 - **Production details:** responsive from small phones to large displays, accessible motion controls, reduced-motion support, SEO metadata, JSON-LD, a sitemap and security headers.
 
@@ -71,6 +72,8 @@ To add a theme:
 1. Add its ID, name, background and colour scheme to `src/lib/themes.ts`.
 2. Add a matching `:root[data-theme="…"]` block to `src/styles/global.css`, including the normalised `--spark-rgb` and `--smoke-rgb` values.
 3. Run `node scripts/check-theme-contrast.mjs` to check that text and accents reach a 4.5:1 contrast ratio.
+
+To test responsiveness and the main interactions in Chromium, Firefox and WebKit, run the production preview, then `PLAYWRIGHT_MODULE=/path/to/playwright-core/index.mjs node scripts/verify-browsers.mjs firefox`. Playwright is supplied externally rather than added as a dependency.
 
 The favicon, touch and app icons use the Graphite colours. If the logo or default palette changes, run `node scripts/generate-icons.mjs` to regenerate them.
 
