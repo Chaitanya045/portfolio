@@ -11,6 +11,7 @@ Each item is a choice the owner made or confirmed. Don't reverse one without ask
 - Blog posts have no site header: a top bar holds the logo (linking home) and "← All posts". The blog list and posts keep the site footer, which pins to the bottom on short pages.
 - Paper (light) theme: the WebGL canvas is hidden and paused, and the hero keeps only its CSS gradient. A colour-inverted shader was tried and looked muddy.
 - Clicking the header logo while the hero is in view cycles the theme. On other pages it goes home.
+- Themes switch instantly. A 3D ripple reveal from the logo (a view transition with a WebGL wave, plus lifted layers so the hero sparks kept moving) was tried and dropped: the owner saw too much flicker, especially at phone sizes.
 - The hero social icons are GitHub, LinkedIn and X (`@chrx_chaitanya`), filled with `--hero-name` on hover.
 - The code is MIT-licensed. `LICENSE` stays the unmodified MIT text, so GitHub still detects it. The README's License section keeps the personal content (src/content, resume.ts, the résumé PDF, screenshots, logo and its renders, docs/hero.png) all rights reserved.
 
