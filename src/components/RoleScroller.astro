@@ -1,10 +1,9 @@
 ---
 const roles = [
   'Software Engineer',
-  'Full Stack Engineer',
+  'Backend Engineer',
+  'Test Automation Engineer',
   'Applied AI Engineer',
-  'QA Automation Engineer',
-  'Vibe Coder',
 ];
 ---
 
@@ -74,7 +73,7 @@ const roles = [
   }
 
   .role-track {
-    animation: roles-scroll 20s cubic-bezier(.65, 0, .35, 1) infinite;
+    animation: roles-scroll 16s cubic-bezier(.65, 0, .35, 1) infinite;
     animation-play-state: var(--role-play-state);
   }
 
@@ -108,15 +107,14 @@ const roles = [
     to { transform: scaleX(1); }
   }
 
-  /* Five readable holds (3.2s each, then a 0.8s slide) and a duplicate first row make the loop seamless. */
+  /* Four readable holds (3.2s each, then a 0.8s slide) and a duplicate first row make the loop seamless. */
   @keyframes roles-scroll {
-    0%, 16% { transform: translateY(0); opacity: 1; filter: blur(0); }
-    20%, 36% { transform: translateY(-16.6667%); opacity: 1; filter: blur(0); }
-    40%, 56% { transform: translateY(-33.3333%); opacity: 1; filter: blur(0); }
-    60%, 76% { transform: translateY(-50%); opacity: 1; filter: blur(0); }
-    80%, 96% { transform: translateY(-66.6667%); opacity: 1; filter: blur(0); }
-    100% { transform: translateY(-83.3333%); opacity: 1; filter: blur(0); }
-    18%, 38%, 58%, 78%, 98% { opacity: .35; filter: blur(2px); }
+    0%, 20% { transform: translateY(0); opacity: 1; filter: blur(0); }
+    25%, 45% { transform: translateY(-20%); opacity: 1; filter: blur(0); }
+    50%, 70% { transform: translateY(-40%); opacity: 1; filter: blur(0); }
+    75%, 95% { transform: translateY(-60%); opacity: 1; filter: blur(0); }
+    100% { transform: translateY(-80%); opacity: 1; filter: blur(0); }
+    22.5%, 47.5%, 72.5%, 97.5% { opacity: .35; filter: blur(2px); }
   }
 
   :global(html[data-intro='playing']) .role-scroller,

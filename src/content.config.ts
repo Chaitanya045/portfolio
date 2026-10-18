@@ -33,8 +33,6 @@ const work = defineCollection({
     // Projects without a screenshot get a typographic cover.
     cover: image().optional(),
     coverAlt: z.string().optional(),
-    // Up to three headline facts shown under the cover, such as "<40s" / "CI push to live docs".
-    highlights: z.array(z.object({ value: z.string(), label: z.string() })).max(3).optional(),
   }),
 });
 

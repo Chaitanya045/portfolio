@@ -1,6 +1,6 @@
 # Chaitanya Sanapala — Portfolio
 
-The personal site of Chaitanya Sanapala, a software engineer in Bangalore working across backend development, SaaS quality engineering and AI systems. It covers selected work, experience, writing and contact details.
+The personal site of Chaitanya Sanapala, a software engineer in Bangalore who builds backend pipelines and the tests that catch them breaking. It covers selected work, experience, writing and contact details.
 
 ![The home page hero in the Graphite theme: the name over a WebGL spark background, with the logo and navigation above](docs/hero.png)
 
@@ -8,17 +8,17 @@ The personal site of Chaitanya Sanapala, a software engineer in Bangalore workin
 
 - **Hero:** a 1.6-second ignition intro, a WebGL spark-and-smoke background that reacts to the cursor, a scrolling role line and a logo that draws itself before the navigation fades in.
 - **Five colour themes:** Graphite (default), Blue, Green, Rust and Paper. Click the header logo while the hero is in view to cycle them.
-- **Case studies:** one MDX file per project, with highlights and covers that morph out of the home page through view transitions.
+- **Case studies:** one MDX file per project, with covers that morph out of the home page through view transitions.
 - **Blog:** MDX posts with an RSS feed, build-time syntax highlighting, a reading progress line and transitions between the list and each post.
 - **Page transitions:** titles, dates and the logo morph between pages with cross-document view transitions in Chrome and Safari. Firefox, which lacks them, gets a scripted version (`src/scripts/page-morph.ts`).
-- **⌘K menu:** search and jump to projects, roles, posts and contact links.
+- **⌘K menu:** a keyboard shortcut to search and jump to projects, roles, posts and contact links.
 - **Production details:** responsive from small phones to large displays, accessible motion controls, reduced-motion support, SEO metadata, JSON-LD, a sitemap and security headers.
 
 No UI framework ships to the browser. Everything is Astro components, CSS and a little TypeScript.
 
 ## Tech stack
 
-[Astro 7](https://astro.build) · TypeScript (strict) · [Tailwind CSS 4](https://tailwindcss.com) · MDX · Zod · [Motion](https://motion.dev), used at build time only · Vercel
+[Astro 7](https://astro.build) · TypeScript (strict) · [Tailwind CSS 4](https://tailwindcss.com) · MDX · Zod · Vercel
 
 ## Getting started
 
@@ -57,7 +57,7 @@ scripts/              icon generator and theme checks
 
 ## Content
 
-**Case studies.** Add an MDX file to `src/content/work/`. Front matter can set up to three `highlights` (value and label) for the at-a-glance row, plus an optional `badge` such as "Proof of concept".
+**Case studies.** Add an MDX file to `src/content/work/`. Front matter can set an optional `badge` such as "Proof of concept".
 
 **Blog posts.** Add an MDX file to `src/content/blog/` with `title`, `description`, `publishedAt` and optional `tags`.
 - `draft: true` previews a post in development only.

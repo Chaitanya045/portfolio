@@ -10,10 +10,6 @@ url: https://rendro.app/
 linkLabel: rendro.app
 cover: ../../assets/work/rendro.png
 coverAlt: The Rendro landing page in dark mode, showing a documentation workspace with a sidebar tree.
-highlights:
-  - { value: 'Diffed', label: 'Only files whose hashes changed are uploaded on each push' }
-  - { value: 'Atomic', label: 'A deployment goes live only once it has been verified' }
-  - { value: 'Sandboxed', label: 'Published HTML renders in an isolated iframe, exactly as authored' }
 ---
 
 import Flow from '../../components/work/Flow.astro';
@@ -30,7 +26,9 @@ Publishing runs through Cloudflare Workers and R2. Comments and authentication a
 
 ## Decisions
 
-- **Hash-based diffing**, so unchanged pages can be skipped on upload.
+- **Hash-based diffing**, so only files whose hashes changed are uploaded on each push.
+- **Atomic deployments**: a push goes live only once it has been verified.
+- **Sandboxed rendering**: published HTML renders in an isolated iframe, exactly as authored.
 - **API-key org isolation**, keeping each organisation’s docs separate.
 - **Lazy tree loading**, so large doc sets open quickly in the sidebar.
 - **Soft deletes and dark mode** in the reader.

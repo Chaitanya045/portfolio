@@ -3,6 +3,7 @@ import { render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Logo from '@/components/Logo.astro';
+import MorphWords from '@/components/blog/MorphWords.astro';
 import SiteFooter from '@/components/SiteFooter.astro';
 import { profile } from '@/data/resume';
 import { formatDate, getPosts, readingMinutes } from '@/lib/blog';
@@ -55,7 +56,7 @@ const article = {
 
       <header class="post-head">
         {tags.length > 0 && <p class="post-tags">{tags.join(' / ')}</p>}
-        <h1 class="display post-title" style={`view-transition-name: post-title-${post.id}; view-transition-class: post-morph`}>{title}</h1>
+        <h1 class="display post-title"><MorphWords text={title} name={`post-title-${post.id}`} large /></h1>
         <p class="post-meta">
           <time datetime={publishedAt.toISOString()} style={`view-transition-name: post-date-${post.id}; view-transition-class: post-morph`}>{formatDate(publishedAt, 'long')}</time>
           <span aria-hidden="true">·</span>

@@ -3,7 +3,7 @@ import { experience, jobId } from '@/data/resume';
 ---
 
 <section id="experience" class="experience wrap" aria-labelledby="experience-title">
-  <h2 id="experience-title" class="prompt-title">~/experience <small>{String(experience.length).padStart(2, '0')} roles</small></h2>
+  <h2 id="experience-title" class="prompt-title">Experience</h2>
   {experience.map((job) => (
     <article class="job" id={jobId(job.company)} data-reveal>
       <div class="job-head">

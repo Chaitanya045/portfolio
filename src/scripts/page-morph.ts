@@ -61,7 +61,9 @@ function play(snapshot: Snapshot) {
       : old.w / box.width;
     const from = { translate: `${old.x - box.left}px ${old.y - box.top}px`, scale: String(scale), transformOrigin: 'left top' };
     if (Math.abs(old.x - box.left) < 1 && Math.abs(old.y - box.top) < 1 && Math.abs(scale - 1) < .01) continue;
-    const animation = el.animate([from, { translate: '0 0', scale: '1', transformOrigin: 'left top' }], { duration: 550, easing: EASE });
+    // Words of a blog title set their own stagger (MorphWords.astro) and wait at the old spot until then.
+    const delay = Number(el.dataset.morphDelay) || 0;
+    const animation = el.animate([from, { translate: '0 0', scale: '1', transformOrigin: 'left top' }], { duration: 550, delay, easing: EASE, fill: 'backwards' });
     animation.finished.then(() => el.style.removeProperty('display'), () => {});
     moving.push(el);
   }

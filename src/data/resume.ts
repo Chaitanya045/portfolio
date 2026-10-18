@@ -1,4 +1,4 @@
-// Content mirrors chaitanya_SE.pdf. Projects live in src/content/work as case studies.
+// Content follows chaitanya_SE.pdf, reworded for the web. Projects live in src/content/work as case studies.
 
 export const profile = {
   name: 'Chaitanya Sanapala',
@@ -11,8 +11,8 @@ export const profile = {
   xHandle: '@chrx_chaitanya',
   // A web copy of the résumé without the phone number, generated from the job-search build script.
   resume: '/Chaitanya_Sanapala_Resume.pdf',
-  statement: 'Software engineer working across backend development, SaaS quality engineering and AI systems.',
-  summary: 'I build reliable backend workflows and the tests that keep them honest: GCP pipelines with Cloud Tasks and Vertex AI/Gemini, an OpenCV-based PDF extraction pipeline, and a TypeScript/Playwright automation framework. Knowing the application and its data model well helps me catch failure scenarios before they ship. Outside work I build coding agents, documentation hosting and API marketplace backends.',
+  statement: 'I build backend pipelines, and the tests that catch them breaking.',
+  summary: 'I’m a software engineer at IronRod Health. I build GCP pipelines on Cloud Tasks and Vertex AI/Gemini, replaced LLM-based PDF extraction with a deterministic OpenCV pipeline, and built our Playwright framework from scratch. Before that I spent two and a half years automating tests at Cognizant, so I tend to look for how something will fail before it ships. Outside work I build coding agents, documentation hosting and API marketplace backends.',
 };
 
 export interface Job {
@@ -35,9 +35,9 @@ export const experience: Job[] = [
     highlights: [
       'Replaced nondeterministic LLM-based extraction of unstructured PDF data with a code-driven pipeline using PDF parsing and OpenCV.',
       'Built a Gemini/Vertex AI pipeline on GCP and moved HTTP triggers to Cloud Tasks queues, fixing failures under high traffic.',
-      'Contributed architectural recommendations that helped cut a microservice’s latency to one-fifth, and implemented retry logic across three microservices.',
+      'Proposed architecture changes that helped cut a microservice’s latency to a fifth, and added retry logic across three microservices.',
       'Built a Playwright automation framework in TypeScript from scratch, replacing Puppeteer.',
-      'Owned feature-release validation, acceptance-criteria reviews and production-readiness approvals.',
+      'Signed off feature releases: reviewed acceptance criteria and approved them for production.',
     ],
     tech: ['TypeScript', 'OpenCV', 'Playwright', 'GCP', 'Cloud Tasks', 'Vertex AI', 'Gemini', 'Zod'],
   },

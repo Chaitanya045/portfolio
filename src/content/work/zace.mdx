@@ -9,10 +9,6 @@ role: Solo project
 stack: [Bun, TypeScript, Python, Zod, JSON-RPC, LSP, uv]
 url: https://github.com/Chaitanya045/Zace
 linkLabel: GitHub
-highlights:
-  - { value: '3', label: 'Typed tools carry every side effect' }
-  - { value: '80%', label: 'Context usage that triggers automatic compaction' }
-  - { value: 'LSP', label: 'Diagnostics fed back after every file change' }
 ---
 
 import Flow from '../../components/work/Flow.astro';
@@ -21,16 +17,18 @@ import Flow from '../../components/work/Flow.astro';
 
 I built Zace to learn how coding agents work under the hood: planning, tool calling, context management and safety checks. It's a proof of concept for learning, not a tool meant for everyday use.
 
-It's a command-line agent built with Bun and TypeScript. It works with any model, and splits each task into planning and execution so that runs are deterministic.
+It's a command-line agent built with Bun and TypeScript. It works with any model and splits each task in two: a planner writes the steps, then an executor carries them out.
 
 ## The runtime
 
 <Flow steps={['Developer intent', 'Planner', 'Executor', 'Validated tools']} />
 
-A context and memory pipeline keeps multi-step execution state. It threads session history and tool outputs through agent loops, and caches structured summaries to improve code understanding.
+Session history and tool outputs carry over from one step to the next. When context usage reaches 80%, the history is compacted automatically.
+
+After every file change, LSP diagnostics are fed back to the agent, so it sees type errors as it makes them.
 
 ## Safety
 
 - **Zod-validated tool schemas**, so malformed tool calls are rejected before they run.
 - **Permission-aware safeguards** around actions that change the workspace.
-- **Controlled side-effect boundaries**, keeping autonomous execution auditable.
+- **Controlled side-effect boundaries**: every side effect goes through one of three typed tools, keeping autonomous execution auditable.

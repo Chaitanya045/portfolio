@@ -11,10 +11,6 @@ import Experience from '@/components/home/Experience.astro';
 import Contact from '@/components/home/Contact.astro';
 import CommandMenu from '@/components/home/CommandMenu.astro';
 import { profile } from '@/data/resume';
-import { spring } from 'motion';
-
-// Bake the spring into CSS so Motion adds no browser runtime for this effect.
-const nameSpring = String(spring(.45));
 
 // Structured data helps search engines show the name, role and profiles together.
 const person = {
@@ -29,7 +25,7 @@ const person = {
 };
 ---
 
-<BaseLayout title="Chaitanya Sanapala — Software Engineer" description="Software engineer in Bangalore working across backend development, SaaS quality engineering and AI systems." launchIntro>
+<BaseLayout title="Chaitanya Sanapala — Software Engineer" description="Software engineer in Bangalore building backend pipelines, and the tests that catch them breaking." launchIntro>
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(person)} />
   <SiteHeader overHero />
   <main id="main">
@@ -38,8 +34,8 @@ const person = {
     <HeroIntro />
     <div data-intro-content class="flex min-h-svh items-center justify-center px-6 text-center">
       <div class="hero-title">
-        <h1 class="hero-name" data-interactive-name style={`--name-spring: ${nameSpring}`}>
-          <span class="hero-name-ink" data-name-ink>CHAITANYA<span class="hero-name-highlight" aria-hidden="true">CHAITANYA</span></span>
+        <h1 class="hero-name">
+          <span class="hero-name-ink">CHAITANYA</span>
         </h1>
         <div class="hero-sub">
           <RoleScroller />
@@ -80,75 +76,6 @@ const person = {
   <CommandMenu />
 </BaseLayout>
 
-<script>
-  const name = document.querySelector<HTMLElement>('[data-interactive-name]');
-  const ink = name?.querySelector<HTMLElement>('[data-name-ink]');
-  const hero = name?.closest<HTMLElement>('[data-hero]');
-
-  if (name && ink && hero) {
-    const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
-    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-    let frame = 0;
-    let pointerX = 0;
-    let pointerY = 0;
-    const enabled = () => finePointer.matches && !reducedMotion.matches &&
-      !document.hidden && !document.documentElement.hasAttribute('data-intro') &&
-      hero.dataset.motion !== 'paused';
-
-    function reset() {
-      cancelAnimationFrame(frame);
-      frame = 0;
-      delete name!.dataset.interacting;
-      ink!.style.setProperty('--name-x', '0px');
-      ink!.style.setProperty('--name-y', '0px');
-    }
-
-    function paint() {
-      frame = 0;
-      if (!enabled()) return reset();
-      const box = name!.getBoundingClientRect();
-      const x = Math.max(0, Math.min(box.width, pointerX - box.left));
-      const y = Math.max(0, Math.min(box.height, pointerY - box.top));
-      name!.dataset.interacting = 'true';
-      ink!.style.setProperty('--name-x', `${(x / box.width - .5) * 10}px`);
-      ink!.style.setProperty('--name-y', `${(y / box.height - .5) * 6}px`);
-      ink!.style.setProperty('--light-x', `${x}px`);
-      ink!.style.setProperty('--light-y', `${y}px`);
-    }
-
-    function move(event: PointerEvent) {
-      if (event.pointerType === 'touch' || event.buttons || !enabled()) return reset();
-      pointerX = event.clientX;
-      pointerY = event.clientY;
-      if (!frame) frame = requestAnimationFrame(paint);
-    }
-
-    name.addEventListener('pointerenter', move);
-    name.addEventListener('pointermove', move);
-    name.addEventListener('pointerleave', reset);
-    name.addEventListener('pointercancel', reset);
-    name.addEventListener('pointerdown', reset);
-    finePointer.addEventListener('change', reset);
-    reducedMotion.addEventListener('change', reset);
-    document.addEventListener('visibilitychange', reset);
-    hero.addEventListener('blaze:motionchange', reset);
-
-    function cleanup() {
-      reset();
-      name!.removeEventListener('pointerenter', move);
-      name!.removeEventListener('pointermove', move);
-      name!.removeEventListener('pointerleave', reset);
-      name!.removeEventListener('pointercancel', reset);
-      name!.removeEventListener('pointerdown', reset);
-      finePointer.removeEventListener('change', reset);
-      reducedMotion.removeEventListener('change', reset);
-      document.removeEventListener('visibilitychange', reset);
-      hero!.removeEventListener('blaze:motionchange', reset);
-    }
-    window.addEventListener('pagehide', (event) => { if (!event.persisted) cleanup(); });
-    document.addEventListener('astro:before-swap', cleanup, { once: true });
-  }
-</script>
 
 <style>
   .hero-title { position: relative; }
@@ -213,18 +140,16 @@ const person = {
   .hero-social:hover::before,
   .hero-social:focus-visible::before { transform: scale(1); }
 
-  /* Once the hero intro has finished, the icons fade in slowly, one after the other.
+  /* Once the hero intro has finished, the icons fade up together with the nav links.
      The list items animate so the links keep their own hover lift. */
   @media (prefers-reduced-motion: no-preference) {
     :global(html[data-intro]) .hero-socials li { opacity: 0; }
-    :global(html[data-intro-done]) .hero-socials li { animation: social-in 2.2s cubic-bezier(.45, 0, .25, 1) .5s both; }
-    :global(html[data-intro-done]) .hero-socials li:nth-child(2) { animation-delay: .95s; }
-    :global(html[data-intro-done]) .hero-socials li:nth-child(3) { animation-delay: 1.4s; }
+    :global(html[data-intro-done]) .hero-socials li { animation: social-in .7s var(--ease-out) 1.3s both; }
   }
 
   @keyframes social-in {
-    from { opacity: 0; transform: translateY(10px); filter: blur(4px); }
-    to { opacity: 1; transform: none; filter: none; }
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -249,58 +174,17 @@ const person = {
     letter-spacing: .04em;
   }
 
-  /* The name is filled with the theme's own shades, and a slow sheen drifts across the letters. */
+  /* The name is filled with the theme's own shades. */
   .hero-name-ink {
     display: inline-block;
-    position: relative;
-    background: linear-gradient(100deg, var(--accent-pale) 0%, var(--hero-name) 30%, var(--accent-strong) 55%, var(--hero-name) 78%, var(--accent-pale) 100%) 0 0 / 220% 100%;
+    background: linear-gradient(100deg, var(--accent-pale), var(--hero-name) 45%, var(--accent-strong));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    transform: translate3d(var(--name-x, 0px), var(--name-y, 0px), 0);
-    transition: transform .6s cubic-bezier(.22, 1, .36, 1);
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .hero-name-ink { animation: name-sheen 14s ease-in-out infinite alternate; }
-    :global([data-hero][data-motion='paused']) .hero-name-ink { animation-play-state: paused; }
-  }
-
-  @keyframes name-sheen {
-    to { background-position: 100% 0; }
   }
 
   /* High-contrast modes ignore background images, so fall back to solid system text. */
   @media (forced-colors: active) {
     .hero-name-ink { background: none; -webkit-text-fill-color: CanvasText; }
-  }
-
-  @supports (transition-timing-function: linear(0, 1)) {
-    .hero-name-ink { transition: transform var(--name-spring); }
-  }
-
-  .hero-name-highlight {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    user-select: none;
-    color: transparent;
-    background: radial-gradient(ellipse 140px 100px at var(--light-x, 50%) var(--light-y, 50%), var(--accent-highlight), color-mix(in srgb, var(--accent-soft) 50.19607843%, transparent) 45%, transparent 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    opacity: 0;
-    transition: opacity .3s ease;
-  }
-
-  .hero-name[data-interacting] .hero-name-highlight { opacity: 1; }
-
-  :global([data-hero][data-motion='paused']) .hero-name-ink,
-  :global([data-hero][data-motion='paused']) .hero-name-highlight {
-    transition: none;
-  }
-
-  @media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
-    .hero-name-ink { transform: none; transition: none; }
-    .hero-name-highlight { display: none; }
   }
 </style>

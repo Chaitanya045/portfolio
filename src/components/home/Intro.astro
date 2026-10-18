@@ -3,56 +3,19 @@ import { profile } from '@/data/resume';
 ---
 
 <section class="intro wrap" aria-labelledby="intro-title">
-  <div class="intro-bar">
-    <p class="prompt-title">~/about</p>
-    <button type="button" class="jump" data-command-open aria-haspopup="dialog">
-      Jump to… <kbd data-shortcut>Ctrl K</kbd>
-    </button>
-  </div>
+  <p class="prompt-title intro-label">About</p>
   <div class="intro-grid">
     <h2 id="intro-title" class="display intro-statement" data-reveal>{profile.statement}</h2>
     <p class="intro-summary" data-reveal>{profile.summary}</p>
   </div>
 </section>
 
-<script>
-  // Show the shortcut the way this platform writes it.
-  const isMac = /Mac|iPhone|iPad/.test(navigator.platform);
-  document.querySelectorAll<HTMLElement>('[data-shortcut]').forEach((key) => {
-    key.textContent = isMac ? '⌘ K' : 'Ctrl K';
-  });
-</script>
-
 <style>
   .intro { padding-top: clamp(4rem, 8vw, 6rem); }
 
-  .intro-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
+  .intro-label {
     padding-bottom: 1.75rem;
     border-bottom: 1px solid var(--line);
-  }
-
-  .jump {
-    padding: .6rem 0;
-    border: 0;
-    color: var(--muted);
-    background: none;
-    font: inherit;
-    font-size: .8125rem;
-    cursor: pointer;
-    transition: color .2s ease;
-  }
-
-  .jump:hover { color: var(--text); }
-
-  .jump kbd {
-    margin-left: .9rem;
-    padding: .15rem .35rem;
-    border-bottom: 1px solid var(--link-line);
-    font: .75rem var(--font-mono);
   }
 
   .intro-grid {
@@ -76,9 +39,5 @@ import { profile } from '@/data/resume';
     font-size: 1.0625rem;
     line-height: 1.8;
     text-wrap: pretty;
-  }
-
-  @media (max-width: 40rem), (pointer: coarse) {
-    .jump { display: none; }
   }
 </style>

@@ -1,0 +1,32 @@
+---
+// Splits a title into words that each carry their own view-transition name, so between the blog
+// list and a post every word travels to its new spot, one after another, left to right.
+// The stagger class `w<n>` is timed in global.css (native transitions); `data-morph-delay` holds
+// the same delay for the Firefox fallback (page-morph.ts). Keep the two in step: 30 ms per word,
+// capped at the tenth word so long titles still finish together.
+// `large` marks the bigger of the two renderings (the post's heading). Only that sharp copy moves,
+// in both directions, because the small one scaled up would blur (see global.css).
+interface Props { text: string; name: string; large?: boolean; }
+
+const { text, name, large = false } = Astro.props;
+const words = text.split(/\s+/).filter(Boolean);
+const STEP_MS = 30;
+const MAX_STEP = 10;
+---
+
+{words.map((word, index) => {
+  const step = Math.min(index, MAX_STEP);
+  return (
+    <>{index > 0 && ' '}<span
+      class="morph-word"
+      style={`view-transition-name: ${name}-${index}; view-transition-class: post-word ${large ? 'post-word-large' : 'post-word-small'} w${step}`}
+      data-morph-delay={step * STEP_MS}
+    >{word}</span></>
+  );
+})}
+
+<style>
+  /* Each word is one box on both pages, so its snapshot scales cleanly and the Firefox fallback
+     never has to switch its display mid-animation. */
+  .morph-word { display: inline-block; }
+</style>

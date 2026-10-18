@@ -2,6 +2,7 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import SiteHeader from '@/components/SiteHeader.astro';
 import SiteFooter from '@/components/SiteFooter.astro';
+import MorphWords from '@/components/blog/MorphWords.astro';
 import { formatDate, getPosts } from '@/lib/blog';
 
 const posts = await getPosts();
@@ -11,14 +12,14 @@ const posts = await getPosts();
   <SiteHeader />
   <main id="main" class="sheet blog">
     <div class="wrap blog-wrap">
-      <h1 class="prompt-title">~/blog <small>{String(posts.length).padStart(2, '0')} {posts.length === 1 ? 'post' : 'posts'}</small></h1>
+      <h1 class="prompt-title">Blog</h1>
 
       {posts.length ? (
         <ol class="posts">
           {posts.map((post) => (
             <li>
               <a href={`/blog/${post.id}/`} class="post">
-                <span class="display post-title" style={`view-transition-name: post-title-${post.id}; view-transition-class: post-morph`}>{post.data.title}{post.data.draft && <span class="post-draft">draft</span>}</span>
+                <span class="display post-title"><MorphWords text={post.data.title} name={`post-title-${post.id}`} />{post.data.draft && <span class="post-draft">draft</span>}</span>
                 <time class="post-date" datetime={post.data.publishedAt.toISOString()} style={`view-transition-name: post-date-${post.id}; view-transition-class: post-morph`}>{formatDate(post.data.publishedAt)}</time>
               </a>
             </li>

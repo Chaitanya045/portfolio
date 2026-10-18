@@ -5,13 +5,13 @@ const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.
 ---
 
 <section id="work" class="projects wrap" aria-labelledby="work-title" data-projects>
-  <h2 id="work-title" class="prompt-title">~/projects <small>{String(work.length).padStart(2, '0')} side projects</small></h2>
+  <h2 id="work-title" class="prompt-title">Side projects</h2>
   {work.map(({ id, data }) => (
     <article class="project" id={id} data-project>
       <p class="project-kind">{data.kind}{data.badge && <span class="badge">{data.badge}</span>}</p>
       <div class="project-head">
         <h3 class="display project-title">
-          <a href={`/work/${id}/`} aria-label={data.title} style={`view-transition-name: title-${id}`}><span class="project-name" style={`--type-step: ${420 / Array.from(data.title).length}ms`} data-project-name>{Array.from(data.title).map((character, index) => <span class="project-character" style={`--character: ${index}`}>{character}</span>)}</span><span class="project-arrow" aria-hidden="true"> →</span></a>
+          <a class="project-link" href={`/work/${id}/`} aria-label={data.title}><span class="project-name" style={`view-transition-name: title-${id}`}>{data.title}</span><span class="project-arrow" aria-hidden="true"> →</span></a>
         </h3>
         <p class="project-when">{data.period}<span>{data.role}</span></p>
       </div>
@@ -23,53 +23,28 @@ const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.
   ))}
 </section>
 
-<script>
-  // Each project title types itself in once, the first time it scrolls into view.
-  const section = document.querySelector<HTMLElement>('[data-projects]');
-
-  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-  if (section && !reducedMotion.matches && 'IntersectionObserver' in window) {
-    const titles = [...section.querySelectorAll<HTMLElement>('[data-project-name]')];
-    const timers = new Map<HTMLElement, number>();
-    const finish = (title: HTMLElement) => {
-      clearTimeout(timers.get(title));
-      timers.delete(title);
-      title.removeAttribute('data-typing');
-      observer.unobserve(title);
-    };
-    const observer = new IntersectionObserver((entries) => {
-      for (const entry of entries) {
-        if (!entry.isIntersecting) continue;
-        const title = entry.target as HTMLElement;
-        title.setAttribute('data-typing', 'active');
-        observer.unobserve(title);
-        timers.set(title, window.setTimeout(() => finish(title), 560));
-      }
-    }, { rootMargin: '0px 0px -10% 0px' });
-    titles.forEach((title) => {
-      title.setAttribute('data-typing', 'pending');
-      observer.observe(title);
-      title.parentElement?.addEventListener('focus', () => finish(title));
-      title.parentElement?.addEventListener('click', () => finish(title));
-    });
-    const finishAll = () => titles.forEach(finish);
-    reducedMotion.addEventListener('change', (event) => { if (event.matches) finishAll(); });
-    addEventListener('pageswap', finishAll);
-    addEventListener('pagehide', finishAll);
-    addEventListener('pagereveal', (event) => { if (event.viewTransition) finishAll(); });
-    // The scripted morph used where cross-document transitions are missing (page-morph.ts).
-    if (document.documentElement.hasAttribute('data-morphed')) finishAll();
-    addEventListener('pagemorph', finishAll);
-  }
-</script>
 
 <style>
   .prompt-title { margin-bottom: .5rem; }
 
   .project {
+    position: relative;
     padding: 2rem 0 2.25rem;
     border-bottom: 1px solid var(--line);
   }
+
+  /* The title link covers the whole row, so the hover cue and the click target match. */
+  .project-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .project-link:focus-visible { outline: none; }
+  .project-link:focus-visible::after { outline: 2px solid var(--color-accent); outline-offset: 4px; }
+
+  /* Inline-block so the morph into the case study title captures one box. */
+  .project-name { display: inline-block; }
 
   .project-kind { color: var(--muted); font-size: .875rem; }
 
@@ -86,38 +61,8 @@ const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.
     line-height: 1.04;
   }
 
-  .project-title a { transition: color .3s ease; }
-  .project:focus-within .project-title a { color: var(--accent); }
-
-  .project-character { position: relative; }
-  /* Keep the caret in the inline tree so typing never changes kerning. */
-  .project-character::after {
-    content: '';
-    position: absolute;
-    right: -.04em;
-    top: .25em;
-    width: 2px;
-    height: .75em;
-    background: var(--accent);
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .project-name[data-typing] .project-character { opacity: 0; }
-    .project-name[data-typing='active'] .project-character {
-      animation: type-character .001s steps(1, start) both;
-      animation-delay: calc(var(--character) * var(--type-step));
-    }
-    .project-name[data-typing='active'] .project-character::after {
-      animation: type-caret var(--type-step) steps(1, end) both;
-      animation-delay: calc(var(--character) * var(--type-step));
-    }
-    .project-name[data-typing='active'] .project-character:last-child::after { animation-duration: calc(var(--type-step) + 140ms); }
-  }
-
-  @keyframes type-character { to { opacity: 1; } }
-  @keyframes type-caret { from { opacity: 1; } to { opacity: 0; } }
+  .project-link { transition: color .3s ease; }
+  .project:focus-within .project-link { color: var(--accent); }
 
   .project-arrow {
     display: inline-block;
@@ -128,7 +73,7 @@ const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.
   .project:focus-within .project-arrow { transform: translateX(.2em); }
 
   @media (hover: hover) {
-    .project:hover .project-title a { color: var(--accent); }
+    .project:hover .project-link { color: var(--accent); }
     .project:hover .project-arrow { transform: translateX(.2em); }
   }
 
@@ -164,6 +109,6 @@ const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .project-title a, .project-arrow { transition: none; }
+    .project-link, .project-arrow { transition: none; }
   }
 </style>

@@ -11,6 +11,7 @@
 
 - **Cross-document view transitions can't be captured here.** They freeze both in headless mode and in headed mode on Xvfb `:99`. Headed runs also need `--ozone-platform=x11` and an environment without `WAYLAND_DISPLAY`.
   - Workaround: replay the transition inside one page. Fetch the destination page, add its stylesheets, call `document.startViewTransition()` with a body swap, record a Chrome DevTools Protocol (CDP) screencast and measure frame brightness with PIL.
+  - Simpler variant: after `vt.ready`, `pause()` every animation and step `currentTime` through a few values, screenshotting each. That gives deterministic frames without a screencast (used for the word-by-word blog title, 2026-10-18).
   - Say that it was verified this way, and ask the owner to confirm in a real browser.
 - **There's no GPU.** Chromium reports SwiftShader, so `src/lib/blaze/renderer.ts` deliberately skips the WebGL hero and the CSS glow shows instead.
   - For captures only, an init script can drop `failIfMajorPerformanceCaveat` and spoof `UNMASKED_RENDERER_WEBGL`. Launch with `--enable-unsafe-swiftshader --use-angle=swiftshader`.
@@ -25,6 +26,7 @@
 
 Set it up per browser:
 - **Firefox:** run `npx playwright@<core version> install firefox` and it runs directly.
+- **WebKit (Docker) never paints a named element's *new* snapshot** during a view transition, even on a bare test page: old snapshots and the root show, the arriving element stays blank. So the forward direction of any morph (list → post, home → case study) can't be judged visually there; check the computed pseudo styles and animation timings instead, and leave the look to real Safari. Its theme-cycle and header checks can also flake when run alongside the other browsers; rerun it alone.
 - **WebKit:** it can't launch on this distro because the system libicu and libxml2 are too new. Run it in Docker instead and pass `ws://127.0.0.1:3123/`:
   `docker run -d --name pw-webkit --network host --init --ipc=host mcr.microsoft.com/playwright:v<core version>-noble sh -c "cd /tmp && npx -y playwright@<core version> run-server --port 3123 --host 127.0.0.1"`
 - **Chromium:** the feature pass adds `@view-transition { navigation: none }`, because cross-document transitions freeze headless Chromium. Firefox and WebKit navigate normally with transitions on.
